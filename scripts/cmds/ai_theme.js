@@ -5,7 +5,41 @@ module.exports = {
     name: "theme",
     aliases: ["aitheme", "customtheme"],
     version: "4.0",
-    author: "SIFAT",
+    author: "shishir",countDown: 5,
+    role: 0,
+    description: {
+      en: "Design and change group interface using AI technology"
+    },
+    category: "box theme",
+    guide: {
+      : "  Check current theme status" +
+        "\n   {pn} <prompt>: Create new AI themes" +
+        "\n   {pn} apply <ID>: Install theme via ID" +
+        "\n   Example: {} neon violet synthwave"
+    }
+}langs: {
+    en: {
+      missingPrompt: "⟦ 𝖶𝖠𝖱𝖭𝖨𝖭𝖦 𝖬𝖤𝖲𝖲𝖠𝖦𝖤 ⟧\n╼╼╼╼╼╼╼╼╼╼╼╼╼╼\n⌬ 𝖯𝗅𝖾𝖺𝗌𝖾 𝖾𝗇𝗍𝖾𝗋 𝖺 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇 𝗈𝗋 𝖨𝖣.\n⧫ 𝖤𝗑𝖺𝗆𝗉𝗅𝖾: {pn} 𝖼𝗒𝖻𝖾𝗋𝗉𝗎𝗇𝗄 𝖼𝗂𝗍𝗒",
+      generating: "process get_AI_DESIGNER... \n⟖ 𝖲𝗒𝗌𝗍𝖾𝗆 𝗂𝗌 𝖼𝗋𝖾𝖺𝗍𝗂𝗇𝗀 𝗏𝗂𝗌𝗎𝖺𝗅 𝖼𝗈𝗇𝖼𝖾𝗉𝗍𝗌...",
+      preview: "🍓 ── ⦗𝗔𝗜 𝗧𝗛𝗘𝗠𝗘⦘ ── 🍓\n\n⌗ 𝖯𝗋𝗈𝗆𝗉𝗍: %2\n⌖ 𝖢𝗈𝗇𝖼𝖾𝗉𝗍𝗌: %1 𝖽𝖾𝗌𝗂𝗀𝗇𝗌 𝗅𝗈𝖺𝖽𝖾𝖽\n\n%3\n\n━━━━━━━━━━━━━━━━\n⦿ 𝖱𝖾𝗉𝗅𝗒 𝗐𝗂𝗍𝗁 [ 𝗇𝗎𝗆𝖻𝖾𝗋 ] 𝗍𝗈 𝗂𝗇𝗌𝗍𝖺𝗅𝗅!",
+ langs: {
+    en: {
+      missingPrompt: "⟦ 𝖶𝖠𝖱𝖭𝖨𝖭𝖦 𝖬𝖤𝖲𝖲𝖠𝖦𝖤 ⟧\n╼╼╼╼╼╼╼╼╼╼╼╼╼╼\n⌬ 𝖯𝗅𝖾𝖺𝗌𝖾 𝖾𝗇𝗍𝖾𝗋 𝖺 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈�: Ch  countDown: 5,
+    role: 0,
+    description: {
+      en: "Design and change group interface using AI technology"
+    },
+    category: "box theme",
+    guide: {
+      :",
+    countDown: 5,
+    role: 0,
+    description: {
+      en: "Design and change group interface using AI technology"
+    },
+    category: "box theme",
+    guide: {
+  ",
     countDown: 5,
     role: 0,
     description: {
@@ -14,6 +48,23 @@ module.exports = {
     category: "box theme",
     guide: {
       en: "   {pn}: Check current theme status" +
+        "\n   {pn} <prompt>: Create new AI themes" +
+        "\n   {pn} apply <ID>: Install theme via ID" +
+        "\n   Example:pn} neon violet synthwave"
+    }
+  },
+
+  langs: {
+    en: {
+      missingPrompt: "⟦ 𝖶𝖠𝖱𝖭𝖨𝖭𝖦 𝖬𝖤𝖲𝖲𝖠𝖦𝖤 ⟧\n╼╼╼╼╼╼╼╼╼╼╼╼╼╼\n⌬ 𝖯𝗅𝖾𝖺𝗌𝖾 𝖾𝗇𝗍𝖾𝗋 𝖺 𝖽𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇 𝗈𝗋 𝖨𝖣.\n⧫ 𝖤𝗑𝖺𝗆𝗉𝗅𝖾: {pn} 𝖼𝗒𝖻𝖾𝗋𝗉𝗎𝗇𝗄 𝖼𝗂𝗍𝗒",
+      generating: "process get_AI_DESIGNER... \n⟖ 𝖲𝗒𝗌𝗍𝖾𝗆 𝗂𝗌 𝖼𝗋𝖾𝖺𝗍𝗂𝗇𝗀 𝗏𝗂𝗌𝗎𝖺𝗅 𝖼𝗈𝗇𝖼𝖾𝗉𝗍𝗌...",
+      preview: "🍓 ── ⦗𝗔𝗜 𝗧𝗛𝗘𝗠𝗘⦘ ── 🍓\n\n⌗ 𝖯𝗋𝗈𝗆𝗉𝗍: %2\n⌖ 𝖢𝗈𝗇𝖼𝖾𝗉𝗍𝗌: %1 𝖽𝖾𝗌𝗂𝗀𝗇𝗌 𝗅𝗈𝖺𝖽𝖾𝖽\n\n%3\n\n━━━━━━━━━━━━━━━━\n⦿ 𝖱pn} neon violet synthwave"
+    }
+  },
+
+  langs: {
+    en: {
+      missingPrompt: "⟦ 𝖶𝖠𝖱𝖭𝖨𝖭𝖦 𝖬𝖤𝖲𝖲𝖠𝖦𝖤 ⟧\n╼╼╼╼╼╼╼╼╼╼╼╼╼╼\n⌬ 𝖯𝗅𝖾𝖺𝗌𝖾 𝖾𝗇𝗍𝖾𝗋 𝖺 𝖽𝖾𝗌𝖼�: "   {pn}: Check current theme status" +
         "\n   {pn} <prompt>: Create new AI themes" +
         "\n   {pn} apply <ID>: Install theme via ID" +
         "\n   Example: {pn} neon violet synthwave"
