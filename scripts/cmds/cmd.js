@@ -115,7 +115,260 @@ module.exports = {
                 name: "cmd",
                 aliases: ["command"],
                 version: "3.0.0",
-                author: "SIFAT",
+                author: "Shishir",          countDown: 3,
+                role: 2,
+                description: { en: "ᴍᴀɴᴀɢᴇ ᴄᴏᴍᴍᴀɴᴅ ꜱᴄʀɪᴘᴛꜱ" },
+                category: "owner",
+                guide: { en: "{pn} load | loadall | unload | reload | reloadall | delete | list | info | source | search | count | enable | disable | install | autopush on/off" }
+        },
+
+        langs: {
+                en: {
+                        noName:        "⌀ ᴇɴᴛᴇʀ ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ",
+                        loaded:        "✦ ʟᴏᴀᴅᴇᴅ ─ %1",
+                        loadFail:      "⌀ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        loadAllDone:   "✦ ʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        loadAllFail:   "\n⌀ ꜰᴀɪʟᴇᴅ %1 ᴄᴍᴅ(ꜱ)\n%2",
+                        unloaded:      "✦ ᴜɴʟᴏᴀᴅᴇᴅ ─ %1",
+                        unloadFail:    "⌀ ᴜɴʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloaded:      "✦ ʀᴇʟᴏᴀᴅᴇᴅ ─ %1",
+                        reloadFail:    "⌀ ʀᴇʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloadAllDone: "✦ ʀᴇʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        noUrl:         "⌀ ᴇɴᴛᴇʀ ᴜʀʟ ᴀɴᴅ ꜰɪʟᴇɴᴀᴍᴇ",
+                        noFileName:    "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ (.ᴊꜱ)",
+                        badUrl:        "⌀ ɪɴᴠᴀʟɪᴅ ᴜʀʟ",
+                        noCode:        "⌀ ᴄᴏᴜʟᴅ ɴᴏᴛ ꜰᴇᴛᴄʜ ᴄᴏᴅᴇ",
+                        exists:        "⌀ ꜰɪʟᴇ ᴀʟʀᴇᴀᴅʏ ᴇxɪꜱᴛꜱ ─ ʀᴇᴀᴄᴛ ᴛᴏ ᴏᴠᴇʀᴡʀɪᴛᴇ",
+                        installed:     "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2",
+                        installedGh:   "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2\n◈ ɢɪᴛʜᴜʙ: ᴘᴜꜱʜᴇᴅ (%3)",
+                        installFail:   "⌀ ɪɴꜱᴛᴀʟʟ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        ghFail:        "⚠ ɢɪᴛʜᴜʙ ᴘᴜꜱʜ ꜰᴀɪʟᴇᴅ ─ %1",
+                        notFound:      "⌀ ᴄᴏᴍᴍᴀɴᴅ ɴᴏᴛ ꜰᴏᴜɴᴅ ─ %1",
+                        info:          "✦ %1\n◈ ᴠᴇʀꜱɪᴏɴ  : %2\n◈ ᴀᴜᴛʜᴏʀ   : %3\n◈ ᴄᴀᴛᴇɢᴏʀʏ : %4\n◈ ʀᴏʟᴇ     : %5\n◈ ᴀʟɪᴀꜱᴇꜱ  : %6\n◈ ᴄᴏᴏʟᴅᴏᴡɴ : %7ꜱ\n◈ ꜱᴛᴀᴛᴜꜱ   : %8",
+                        autopushOn:    "✅ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏɴ\n◈ ɪɴꜱᴛᴀʟʟ ᴇʀ ᴘᴏʀ GitHub ᴇ ᴀᴜᴛᴏ ᴘᴜꜱʜ ʜᴏʙᴇ",
+                        autopushOff:   "🔴 ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏꜰꜰ\n◈ ᴍᴀɴᴜᴀʟ .ɢɪᴛᴘᴜꜱʜ ʙʏᴀᴠᴀʜᴀʀ ᴋᴏʀᴏ",
+                        autopushStat:  "◈ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ: %1\n◈ ᴜꜱᴀɢᴇ: .ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ ᴏɴ/ᴏꜰꜰ",
+                        deleteConfirm: "⚠ ᴅᴇʟᴇᴛᴇ [%1]?\n◈ ᴛʜɪꜱ ᴡɪʟʟ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ .ᴊꜱ ꜰɪʟᴇ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ᴅᴇʟᴇᴛᴇᴅ ─ %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        disabled:      "🔴 ᴅɪꜱᴀʙʟᴇᴅ ─ %1",
+                        enabled:       "✅ ᴇɴᴀʙʟᴇᴅ ─ %1",
+                        alreadyState:  "⌀ %1 ɪꜱ ᴀʟʀᴇᴀᴅʏ %2",
+                        noResults:     "⌀ ɴᴏ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ: %1",
+                        searchResult:  "🔍 ꜱᴇᴀʀᴄʜ [%1] — %2 ʀᴇꜱᴜʟᴛ(ꜱ):\n%3",
+                        sourceHeader:  "📄 ꜱᴏᴜʀᴄᴇ ─ %1.ᴊꜱ\n◈ ꜱɪᴢᴇ: %2 ʙʏᴛᴇꜱ | %3 ʟɪɴᴇꜱ\n━━━━━━━━━━━━━━━━\n%4",
+                        count:         "📊 ᴄᴍᴅ ꜱᴛᴀᴛꜱ\n◈ ᴛᴏᴛᴀʟ     : %1\n◈ ᴅɪꜱᴀʙʟᴇᴅ  : %2\n◈ ʙʏ ʀᴏʟᴇ   :\n%3\n◈ ʙʏ ᴄᴀᴛ    :\n%4"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (sub === "load" && args.length === 2) {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const r = loadOne(args[1]);
+                        if (r.status === "success") return message.reply(getLang("loaded", r.name));
+                        return message.reply(getLang("loadFail", r.name, r.error.message));
+                }
+
+                if (sub === "loadall" || (sub === "load" && args.length > 2)) {
+                        const files = sub === "loadall"
+                                ? fs.readdirSync(`${process.cwd()}/scripts/cmds`)
+                                        .filter(f => f.endsWith(".js") && !f.endsWith(".eg.js") && !configCommands.commandUnload?.includes(f))
+                                        .map(f => f.replace(".js", ""))
+                                : args.slice(1);
+                        const ok = [], fail = [];
+                          countDown: 3,
+                role: 2,
+                description: { en: "ᴍᴀɴᴀɢᴇ ᴄᴏᴍᴍᴀɴᴅ ꜱᴄʀɪᴘᴛꜱ" },
+                category: "owner",
+                guide: { en: "{pn} load | loadall | unload | reload | reloadall | delete | list | info | source | search | count | enable | disable | install | autopush on/off" }
+        },
+
+        langs: {
+                en: {
+                        noName:        "⌀ ᴇɴᴛᴇʀ ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ",
+                        loaded:        "✦ ʟᴏᴀᴅᴇᴅ ─ %1",
+                        loadFail:      "⌀ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        loadAllDone:   "✦ ʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        loadAllFail:   "\n⌀ ꜰᴀɪʟᴇᴅ %1 ᴄᴍᴅ(ꜱ)\n%2",
+                        unloaded:      "✦ ᴜɴʟᴏᴀᴅᴇᴅ ─ %1",
+                        unloadFail:    "⌀ ᴜɴʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloaded:      "✦ ʀᴇʟᴏᴀᴅᴇᴅ ─ %1",
+                        reloadFail:    "⌀ ʀᴇʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloadAllDone: "✦ ʀᴇʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        noUrl:         "⌀ ᴇɴᴛᴇʀ ᴜʀʟ ᴀɴᴅ ꜰɪʟᴇɴᴀᴍᴇ",
+                        noFileName:    "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ (.ᴊꜱ)",
+                        badUrl:        "⌀ ɪɴᴠᴀʟɪᴅ ᴜʀʟ",
+                        noCode:        "⌀ ᴄᴏᴜʟᴅ ɴᴏᴛ ꜰᴇᴛᴄʜ ᴄᴏᴅᴇ",
+                        exists:        "⌀ ꜰɪʟᴇ ᴀʟʀᴇᴀᴅʏ ᴇxɪꜱᴛꜱ ─ ʀᴇᴀᴄᴛ ᴛᴏ ᴏᴠᴇʀᴡʀɪᴛᴇ",
+                        installed:     "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2",
+                        installedGh:   "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2\n◈ ɢɪᴛʜᴜʙ: ᴘᴜꜱʜᴇᴅ (%3)",
+                        installFail:   "⌀ ɪɴꜱᴛᴀʟʟ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        ghFail:        "⚠ ɢɪᴛʜᴜʙ ᴘᴜꜱʜ ꜰᴀɪʟᴇᴅ ─ %1",
+                        notFound:      "⌀ ᴄᴏᴍᴍᴀɴᴅ ɴᴏᴛ ꜰᴏᴜɴᴅ ─ %1",
+                        info:          "✦ %1\n◈ ᴠᴇʀꜱɪᴏɴ  : %2\n◈ ᴀᴜᴛʜᴏʀ   : %3\n◈ ᴄᴀᴛᴇɢᴏʀʏ : %4\n◈ ʀᴏʟᴇ     : %5\n◈ ᴀʟɪᴀꜱᴇꜱ  : %6\n◈ ᴄᴏᴏʟᴅᴏᴡɴ : %7ꜱ\n◈ ꜱᴛᴀᴛᴜꜱ   : %8",
+                        autopushOn:    "✅ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏɴ\n◈ ɪɴꜱᴛᴀʟʟ ᴇʀ ᴘᴏʀ GitHub ᴇ ᴀᴜᴛᴏ ᴘᴜꜱʜ ʜᴏʙᴇ",
+                        autopushOff:   "🔴 ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏꜰꜰ\n◈ ᴍᴀɴᴜᴀʟ .ɢɪᴛᴘᴜꜱʜ ʙʏᴀᴠᴀʜᴀʀ ᴋᴏʀᴏ",
+                        autopushStat:  "◈ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ: %1\n◈ ᴜꜱᴀɢᴇ: .ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ ᴏɴ/ᴏꜰꜰ",
+                        deleteConfirm: "⚠ ᴅᴇʟᴇᴛᴇ [%1]?\n◈ ᴛʜɪꜱ ᴡɪʟʟ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ .ᴊꜱ ꜰɪʟᴇ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ᴅᴇʟᴇᴛᴇᴅ ─ %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        disabled:      "🔴 ᴅɪꜱᴀʙʟᴇᴅ ─ %1",
+                        enabled:       "✅ ᴇɴᴀʙʟᴇᴅ ─ %1",
+                        alreadyState:  "⌀ %1 ɪꜱ ᴀʟʀᴇᴀᴅʏ %2",
+                        noResults:     "⌀ ɴᴏ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ: %1",
+                        searchResult:  "🔍 ꜱᴇᴀʀᴄʜ [%1] — %2 ʀᴇꜱᴜʟᴛ(ꜱ):\n%3",
+                        sourceHeader:  "📄 ꜱᴏᴜʀᴄᴇ ─ %1.ᴊꜱ\n◈ ꜱɪᴢᴇ: %2 ʙʏᴛᴇꜱ | %3 ʟɪɴᴇꜱ\n━━━━━━━━━━━━━━━━\n%4",
+                        count:         "📊 ᴄᴍᴅ ꜱᴛᴀᴛꜱ\n◈ ᴛᴏᴛᴀʟ     : %1\n◈ ᴅɪꜱᴀʙʟᴇᴅ  : %2\n◈ ʙʏ ʀᴏʟᴇ   :\n%3\n◈ ʙʏ ᴄᴀᴛ    :\n%4"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (sub === "load" && args.length === 2) {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const r = loadOne(args[1]);
+                        if (r.status === "success") return message.reply(getLang("loaded", r.name));
+                        return message.reply(getLang("loadFail", r.name, r.error.message));
+                }
+
+                if (sub === "loadall" || (sub === "load" && args.length > 2)) {
+                        const files = sub === "loadall"
+                                ? fs.readdirSync(`${process.cwd()}/scripts/cmds`)
+                                        .filter(f => f.endsWith(".js") && !f.endsWith(".eg.js") && !configCommands.commandUnload?.includes(f))
+                                        .map(f => f.replace(".js", ""))
+                                : args.slice(1);
+                        const ok = [], fail = [];
+                             countDown: 3,
+                role: 2,
+                description: { en: "ᴍᴀɴᴀɢᴇ ᴄᴏᴍᴍᴀɴᴅ ꜱᴄʀɪᴘᴛꜱ" },
+                category: "owner",
+                guide: { en: "{pn} load | loadall | unload | reload | reloadall | delete | list | info | source | search | count | enable | disable | install | autopush on/off" }
+        },
+
+        langs: {
+                en: {
+                        noName:        "⌀ ᴇɴᴛᴇʀ ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ",
+                        loaded:        "✦ ʟᴏᴀᴅᴇᴅ ─ %1",
+                        loadFail:      "⌀ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        loadAllDone:   "✦ ʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        loadAllFail:   "\n⌀ ꜰᴀɪʟᴇᴅ %1 ᴄᴍᴅ(ꜱ)\n%2",
+                        unloaded:      "✦ ᴜɴʟᴏᴀᴅᴇᴅ ─ %1",
+                        unloadFail:    "⌀ ᴜɴʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloaded:      "✦ ʀᴇʟᴏᴀᴅᴇᴅ ─ %1",
+                        reloadFail:    "⌀ ʀᴇʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloadAllDone: "✦ ʀᴇʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        noUrl:         "⌀ ᴇɴᴛᴇʀ ᴜʀʟ ᴀɴᴅ ꜰɪʟᴇɴᴀᴍᴇ",
+                        noFileName:    "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ (.ᴊꜱ)",
+                        badUrl:        "⌀ ɪɴᴠᴀʟɪᴅ ᴜʀʟ",
+                        noCode:        "⌀ ᴄᴏᴜʟᴅ ɴᴏᴛ ꜰᴇᴛᴄʜ ᴄᴏᴅᴇ",
+                        exists:        "⌀ ꜰɪʟᴇ ᴀʟʀᴇᴀᴅʏ ᴇxɪꜱᴛꜱ ─ ʀᴇᴀᴄᴛ ᴛᴏ ᴏᴠᴇʀᴡʀɪᴛᴇ",
+                        installed:     "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2",
+                        installedGh:   "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2\n◈ ɢɪᴛʜᴜʙ: ᴘᴜꜱʜᴇᴅ (%3)",
+                        installFail:   "⌀ ɪɴꜱᴛᴀʟʟ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        ghFail:        "⚠ ɢɪᴛʜᴜʙ ᴘᴜꜱʜ ꜰᴀɪʟᴇᴅ ─ %1",
+                        notFound:      "⌀ ᴄᴏᴍᴍᴀɴᴅ ɴᴏᴛ ꜰᴏᴜɴᴅ ─ %1",
+                        info:          "✦ %1\n◈ ᴠᴇʀꜱɪᴏɴ  : %2\n◈ ᴀᴜᴛʜᴏʀ   : %3\n◈ ᴄᴀᴛᴇɢᴏʀʏ : %4\n◈ ʀᴏʟᴇ     : %5\n◈ ᴀʟɪᴀꜱᴇꜱ  : %6\n◈ ᴄᴏᴏʟᴅᴏᴡɴ : %7ꜱ\n◈ ꜱᴛᴀᴛᴜꜱ   : %8",
+                        autopushOn:    "✅ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏɴ\n◈ ɪɴꜱᴛᴀʟʟ ᴇʀ ᴘᴏʀ GitHub ᴇ ᴀᴜᴛᴏ ᴘᴜꜱʜ ʜᴏʙᴇ",
+                        autopushOff:   "🔴 ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏꜰꜰ\n◈ ᴍᴀɴᴜᴀʟ .ɢɪᴛᴘᴜꜱʜ ʙʏᴀᴠᴀʜᴀʀ ᴋᴏʀᴏ",
+                        autopushStat:  "◈ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ: %1\n◈ ᴜꜱᴀɢᴇ: .ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ ᴏɴ/ᴏꜰꜰ",
+                        deleteConfirm: "⚠ ᴅᴇʟᴇᴛᴇ [%1]?\n◈ ᴛʜɪꜱ ᴡɪʟʟ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ .ᴊꜱ ꜰɪʟᴇ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ᴅᴇʟᴇᴛᴇᴅ ─ %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        disabled:      "🔴 ᴅɪꜱᴀʙʟᴇᴅ ─ %1",
+                        enabled:       "✅ ᴇɴᴀʙʟᴇᴅ ─ %1",
+                        alreadyState:  "⌀ %1 ɪꜱ ᴀʟʀᴇᴀᴅʏ %2",
+                        noResults:     "⌀ ɴᴏ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ: %1",
+                        searchResult:  "🔍 ꜱᴇᴀʀᴄʜ [%1] — %2 ʀᴇꜱᴜʟᴛ(ꜱ):\n%3",
+                        sourceHeader:  "📄 ꜱᴏᴜʀᴄᴇ ─ %1.ᴊꜱ\n◈ ꜱɪᴢᴇ: %2 ʙʏᴛᴇꜱ | %3 ʟɪɴᴇꜱ\n━━━━━━━━━━━━━━━━\n%4",
+                        count:         "📊 ᴄᴍᴅ ꜱᴛᴀᴛꜱ\n◈ ᴛᴏᴛᴀʟ     : %1\n◈ ᴅɪꜱᴀʙʟᴇᴅ  : %2\n◈ ʙʏ ʀᴏʟᴇ   :\n%3\n◈ ʙʏ ᴄᴀᴛ    :\n%4"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (sub === "load" && args.length === 2) {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const r = loadOne(args[1]);
+                        if (r.status === "success") return message.reply(getLang("loaded", r.name));
+                        return message.reply(getLang("loadFail", r.name, r.error.message));
+                }
+
+                if (sub === "loadall" || (sub === "load" && args.length > 2)) {
+                        const files = sub === "loadall"
+                                ? fs.readdirSync(`${process.cwd()}/scripts/cmds`)
+                                        .filter(f => f.endsWith(".js") && !f.endsWith(".eg.js") && !configCommands.commandUnload?.includes(f))
+                                        .map(f => f.replace(".js", ""))
+                                : args.slice(1);
+                        const ok = [], fail = [];
+              ",
+                countDown: 3,
+                role: 2,
+                description: { en: "ᴍᴀɴᴀɢᴇ ᴄᴏᴍᴍᴀɴᴅ ꜱᴄʀɪᴘᴛꜱ" },
+                category: "owner",
+                guide: { en: "{pn} load | loadall | unload | reload | reloadall | delete | list | info | source | search | count | enable | disable | install | autopush on/off" }
+        },
+
+        langs: {
+                en: {
+                        noName:        "⌀ ᴇɴᴛᴇʀ ᴄᴏᴍᴍᴀɴᴅ ɴᴀᴍᴇ",
+                        loaded:        "✦ ʟᴏᴀᴅᴇᴅ ─ %1",
+                        loadFail:      "⌀ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        loadAllDone:   "✦ ʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        loadAllFail:   "\n⌀ ꜰᴀɪʟᴇᴅ %1 ᴄᴍᴅ(ꜱ)\n%2",
+                        unloaded:      "✦ ᴜɴʟᴏᴀᴅᴇᴅ ─ %1",
+                        unloadFail:    "⌀ ᴜɴʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloaded:      "✦ ʀᴇʟᴏᴀᴅᴇᴅ ─ %1",
+                        reloadFail:    "⌀ ʀᴇʟᴏᴀᴅ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        reloadAllDone: "✦ ʀᴇʟᴏᴀᴅᴇᴅ %1 ᴄᴍᴅ(ꜱ)%2",
+                        noUrl:         "⌀ ᴇɴᴛᴇʀ ᴜʀʟ ᴀɴᴅ ꜰɪʟᴇɴᴀᴍᴇ",
+                        noFileName:    "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ (.ᴊꜱ)",
+                        badUrl:        "⌀ ɪɴᴠᴀʟɪᴅ ᴜʀʟ",
+                        noCode:        "⌀ ᴄᴏᴜʟᴅ ɴᴏᴛ ꜰᴇᴛᴄʜ ᴄᴏᴅᴇ",
+                        exists:        "⌀ ꜰɪʟᴇ ᴀʟʀᴇᴀᴅʏ ᴇxɪꜱᴛꜱ ─ ʀᴇᴀᴄᴛ ᴛᴏ ᴏᴠᴇʀᴡʀɪᴛᴇ",
+                        installed:     "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2",
+                        installedGh:   "✦ ɪɴꜱᴛᴀʟʟᴇᴅ ─ %1\n◈ ᴘᴀᴛʜ: %2\n◈ ɢɪᴛʜᴜʙ: ᴘᴜꜱʜᴇᴅ (%3)",
+                        installFail:   "⌀ ɪɴꜱᴛᴀʟʟ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        ghFail:        "⚠ ɢɪᴛʜᴜʙ ᴘᴜꜱʜ ꜰᴀɪʟᴇᴅ ─ %1",
+                        notFound:      "⌀ ᴄᴏᴍᴍᴀɴᴅ ɴᴏᴛ ꜰᴏᴜɴᴅ ─ %1",
+                        info:          "✦ %1\n◈ ᴠᴇʀꜱɪᴏɴ  : %2\n◈ ᴀᴜᴛʜᴏʀ   : %3\n◈ ᴄᴀᴛᴇɢᴏʀʏ : %4\n◈ ʀᴏʟᴇ     : %5\n◈ ᴀʟɪᴀꜱᴇꜱ  : %6\n◈ ᴄᴏᴏʟᴅᴏᴡɴ : %7ꜱ\n◈ ꜱᴛᴀᴛᴜꜱ   : %8",
+                        autopushOn:    "✅ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏɴ\n◈ ɪɴꜱᴛᴀʟʟ ᴇʀ ᴘᴏʀ GitHub ᴇ ᴀᴜᴛᴏ ᴘᴜꜱʜ ʜᴏʙᴇ",
+                        autopushOff:   "🔴 ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ → ᴏꜰꜰ\n◈ ᴍᴀɴᴜᴀʟ .ɢɪᴛᴘᴜꜱʜ ʙʏᴀᴠᴀʜᴀʀ ᴋᴏʀᴏ",
+                        autopushStat:  "◈ ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ: %1\n◈ ᴜꜱᴀɢᴇ: .ᴄᴍᴅ ᴀᴜᴛᴏᴘᴜꜱʜ ᴏɴ/ᴏꜰꜰ",
+                        deleteConfirm: "⚠ ᴅᴇʟᴇᴛᴇ [%1]?\n◈ ᴛʜɪꜱ ᴡɪʟʟ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ .ᴊꜱ ꜰɪʟᴇ ᴘᴇʀᴍᴀɴᴇɴᴛʟʏ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ᴅᴇʟᴇᴛᴇᴅ ─ %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ ─ %1\n◈ %2",
+                        disabled:      "🔴 ᴅɪꜱᴀʙʟᴇᴅ ─ %1",
+                        enabled:       "✅ ᴇɴᴀʙʟᴇᴅ ─ %1",
+                        alreadyState:  "⌀ %1 ɪꜱ ᴀʟʀᴇᴀᴅʏ %2",
+                        noResults:     "⌀ ɴᴏ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ: %1",
+                        searchResult:  "🔍 ꜱᴇᴀʀᴄʜ [%1] — %2 ʀᴇꜱᴜʟᴛ(ꜱ):\n%3",
+                        sourceHeader:  "📄 ꜱᴏᴜʀᴄᴇ ─ %1.ᴊꜱ\n◈ ꜱɪᴢᴇ: %2 ʙʏᴛᴇꜱ | %3 ʟɪɴᴇꜱ\n━━━━━━━━━━━━━━━━\n%4",
+                        count:         "📊 ᴄᴍᴅ ꜱᴛᴀᴛꜱ\n◈ ᴛᴏᴛᴀʟ     : %1\n◈ ᴅɪꜱᴀʙʟᴇᴅ  : %2\n◈ ʙʏ ʀᴏʟᴇ   :\n%3\n◈ ʙʏ ᴄᴀᴛ    :\n%4"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (sub === "load" && args.length === 2) {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const r = loadOne(args[1]);
+                        if (r.status === "success") return message.reply(getLang("loaded", r.name));
+                        return message.reply(getLang("loadFail", r.name, r.error.message));
+                }
+
+                if (sub === "loadall" || (sub === "load" && args.length > 2)) {
+                        const files = sub === "loadall"
+                                ? fs.readdirSync(`${process.cwd()}/scripts/cmds`)
+                                        .filter(f => f.endsWith(".js") && !f.endsWith(".eg.js") && !configCommands.commandUnload?.includes(f))
+                                        .map(f => f.replace(".js", ""))
+                                : args.slice(1);
+                        const ok = [], fail = [];
+              ",
                 countDown: 3,
                 role: 2,
                 description: { en: "ᴍᴀɴᴀɢᴇ ᴄᴏᴍᴍᴀɴᴅ ꜱᴄʀɪᴘᴛꜱ" },
