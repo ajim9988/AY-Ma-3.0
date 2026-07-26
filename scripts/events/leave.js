@@ -102,7 +102,152 @@ module.exports = {
     config: {
         name:     "leave",
         version:  "3.0.0",
-        author:   "SIFAT",
+        author:   "Shishir    category: "events"
+    },
+
+    langs: {
+        en: {
+            session1:           "morning",
+            session2:           "noon",
+            session3:           "afternoon",
+            session4:           "evening",
+            leaveType1:         "left",
+            leaveType2:         "was kicked from",
+            defaultLeaveMessage:"👋 {userName} {type} the group.\n🕐 {time}  •  👥 {count} remaining"
+        }
+    },
+
+    onStart: async ({ threadsData, event, api }) => {
+        if (event.logMessageType !== "log:unsubscribe") return;
+
+        return async function () {
+            const { threadID } = event;
+            const uid = event.logMessageData?.leftParticipantFbId;
+            if (!uid) return;
+            if (String(uid) === String(api.getCurrentUserID())) return;
+
+            const isKicked = String(uid) !== String(event.author);
+
+            let name = "Member";
+            try {
+                const info = await api.getUserInfo(uid);
+                name = info[uid]?.name || "Member";
+            } catch (_) {}
+
+            const queue = global.temp._leaveQueue.get(threadID) || [];
+            queue.push({ uid, name, isKicked });
+            global.temp._leaveQueue.set(threadID, queue);
+
+            const timerKey = `_leaveTimer_${threadID}`;
+            if (global.temp[timerKey]) clearTimeout(global.temp[timerKey]);
+
+            global.temp[timerKey] = setTimeout(() => {
+                delete global.temp[timerKey];
+                const batch = global.temp._leaveQueue.get(threadID) || [];
+                global.temp._leaveQueue.delete(threadID);
+                flushBatch(threadID, batch, api, threadsData).catch(() => {});
+            }, BATCH_MS);
+        };
+    }
+};
+       category: "events"
+    },
+
+    langs: {
+        en: {
+            session1:           "morning",
+            session2:           "noon",
+            session3:           "afternoon",
+            session4:           "evening",
+            leaveType1:         "left",
+            leaveType2:         "was kicked from",
+            defaultLeaveMessage:"👋 {userName} {type} the group.\n🕐 {time}  •  👥 {count} remaining"
+        }
+    },
+
+    onStart: async ({ threadsData, event, api }) => {
+        if (event.logMessageType !== "log:unsubscribe") return;
+
+        return async function () {
+            const { threadID } = event;
+            const uid = event.logMessageData?.leftParticipantFbId;
+            if (!uid) return;
+            if (String(uid) === String(api.getCurrentUserID())) return;
+
+            const isKicked = String(uid) !== String(event.author);
+
+            let name = "Member";
+            try {
+                const info = await api.getUserInfo(uid);
+                name = info[uid]?.name || "Member";
+            } catch (_) {}
+
+            const queue = global.temp._leaveQueue.get(threadID) || [];
+            queue.push({ uid, name, isKicked });
+            global.temp._leaveQueue.set(threadID, queue);
+
+            const timerKey = `_leaveTimer_${threadID}`;
+            if (global.temp[timerKey]) clearTimeout(global.temp[timerKey]);
+
+            global.temp[timerKey] = setTimeout(() => {
+                delete global.temp[timerKey];
+                const batch = global.temp._leaveQueue.get(threadID) || [];
+                global.temp._leaveQueue.delete(threadID);
+                flushBatch(threadID, batch, api, threadsData).catch(() => {});
+            }, BATCH_MS);
+        };
+    }
+};
+",
+        category: "events"
+    },
+
+    langs: {
+        en: {
+            session1:           "morning",
+            session2:           "noon",
+            session3:           "afternoon",
+            session4:           "evening",
+            leaveType1:         "left",
+            leaveType2:         "was kicked from",
+            defaultLeaveMessage:"👋 {userName} {type} the group.\n🕐 {time}  •  👥 {count} remaining"
+        }
+    },
+
+    onStart: async ({ threadsData, event, api }) => {
+        if (event.logMessageType !== "log:unsubscribe") return;
+
+        return async function () {
+            const { threadID } = event;
+            const uid = event.logMessageData?.leftParticipantFbId;
+            if (!uid) return;
+            if (String(uid) === String(api.getCurrentUserID())) return;
+
+            const isKicked = String(uid) !== String(event.author);
+
+            let name = "Member";
+            try {
+                const info = await api.getUserInfo(uid);
+                name = info[uid]?.name || "Member";
+            } catch (_) {}
+
+            const queue = global.temp._leaveQueue.get(threadID) || [];
+            queue.push({ uid, name, isKicked });
+            global.temp._leaveQueue.set(threadID, queue);
+
+            const timerKey = `_leaveTimer_${threadID}`;
+            if (global.temp[timerKey]) clearTimeout(global.temp[timerKey]);
+
+            global.temp[timerKey] = setTimeout(() => {
+                delete global.temp[timerKey];
+                const batch = global.temp._leaveQueue.get(threadID) || [];
+                global.temp._leaveQueue.delete(threadID);
+                flushBatch(threadID, batch, api, threadsData).catch(() => {});
+            }, BATCH_MS);
+        };
+    }
+};
+",
         category: "events"
     },
 
