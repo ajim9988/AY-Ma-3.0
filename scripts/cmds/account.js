@@ -49,7 +49,762 @@ module.exports = {
         name    : "account",
         aliases : ["acc", "acct", "accsw"],
         version : "2.0.0",
-        author  : "SIFAT",
+        author  : "shishir  role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr,parseI  role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr,parseInt(args[1]) || 1);
+
+            case "pin":
+            case "prefer":
+                return doPin(message, mgr, args[1]);
+
+            case "help":
+            case "h":
+            default:
+                return showHelp(message, pfx);
+        }
+    },
+};
+
+async function showStatus(message, mgr, pfx) {
+    const stats = mgr.getStats();
+    const cur   = stats.currentAccount || "none";
+
+    const rows = [
+        ui.kv("Active Account", cur, "📡"),
+        ui.kv("Slot",           `${(stats.currentIndex ?? 0) + 1} / ${stats.totalAccounts}`, "🔢"),
+        ui.kv("Available",      `${stats.availableAccounts} / ${stats.totalAccounts}`, "✅"),
+        ui.kv("Total Switches", String(stats.switchCount), "↻"),
+        ui.kv("Can Switch",     stats.canSwitch ? "✅ Yes" : "⏳ Cooldown active", "🔄"),
+        ui.kv("Uptime",         stats.uptime || "?", "⏱️"),
+        ui.RULE,
+    ];
+
+    if (stats.accounts?.length) {
+        for (const a of stats.accounts) {
+            const isCur = a.name === cur;
+            const icon  = circuitIcon(a.circuitState);
+            const label = isCur ? `${a.name}  ◄ ACTIVE` : a.name;
+            rows.push(ui.kv(`${icon} ${label}`, healthLabel(a.score), ""));
+            rows.push(ui.kv("  Health Bar",    scoreBar(a.score), ""));
+            rows.push(ui.kv("  Circuit",       a.circuitState, ""));
+            rows.push(ui.kv("  Failures",      SfailureCount), ""));
+            rows.push(ui.RULE);
+        }
+    }
+
+    rows.push(`💡 ${pfx}account switch  •  ${pfx}account rescan`);
+
+    return message.reply(ui.box("🔐 ACCOUNT STATUS", rows, { footer: `checked at ${now()}` }));
+}
+
+async function showList(message, mgr, pfx) {
+    const stats = mgr.getStats();
+    const cur   = stats.currentAccount || "";
+
+    if (!stats.accounts?.length) {
+        return message.reply(ui.box("🔐 ACCOUNT LIST", [
+            "❌ No accounts registered.",
+            ui.RULE,
+            "Add cookies to:",
+            "  accounts/account2.txt",
+            "Then run:",
+            `  ${pfx}account rescan`,
+        ]));
+    }
+
+    const items = stats.accounts.map((a, i) => {
+        const active  = a.name === cur ? " ◄ ACTIVE" : "";
+        const icon    = circuitIcon(a.circuitState);
+        const bar     = scoreBar(a.score);
+        return `${i + 1}. ${icon} ${a.name}${active}\n   ${bar}  •  ${a.circuitState}`;
+    });
+
+    items.push(ui.RULE);
+    items.push(`📊 Total: ${stats.totalAccounts}  •  Available: ${stats.availableAccounts}`);
+
+    return message.reply(ui.box("🔐 ACCOUNT LIST", items, { footer: `${pfx}account detail <n>  for full info` }));
+}
+
+async function showDetail(message, mgr, idx) {
+    const stats = mgr.getStats();
+    const acc   = stats.accounts?.[idx - 1];
+
+    if (!acc) {
+        return message.reply(ui.warn("Not Found", `No accounidx}. Valid range: 1–${stats.accounts?.length || 0}`));
+    }
+
+    const cur = stats.currentAccount || "";
+    return message.reply(ui.box(`🔍 ACCOUNTACCOUNTidx} DETAIL`, [
+        ui.kv("Slot",         String(idx),                                          "▸"),
+        ui.kv("Filename",     acc.name,                                            "▸"),
+        ui.kv("Status",       acc.name === cur ? "🟢 ACTIVE" : "⚪ STANDBY",       "▸"),
+        ui.RULE,
+        ui.kv("Health Score", scoreBar(acc.score),                                 "▸"),
+        ui.kv("Health Grade", healthLabel(acc.score),                              "▸"),
+        ui.kv("Circuit",      `${circuitIcon(acc.circuitState)} ${acc.circuitState}`, "▸"),
+        ui.RULE,
+        ui.kv("Failures",     String(acc.failureCount),                            "▸"),
+        ui.kv("Successes",    String(acc.successCount || 0),                       "▸"),
+    ], { footer: `checked at ${now()}` }));
+}
+
+async function doSwitch(message, mgr, targetArg) {
+    if (targetArg && !isNaN(targetArg)) {
+        return doSwitchToSlot(message, mgr, parseInt(targetArg));
+    }
+
+    if (mgr.isSingleAccount()) {
+        const a2 = accDir("account2.txt");
+        const a3 = accDir("account3.txt");
+        const has2 = fs.existsSync(a2) && fs.statSync(a2).size > 10;
+        const has3 = fs.existsSync(a3) && fs.statSync(a3).size > 10;
+
+        if (!has2 && !has3) {
+            return message.reply(ui.box("🔐 ACCOUNT SWITCH", [
+                "❌ Only 1 account registered.",
+                ui.RULE,
+                "To enable failover, add more accounts:",
+                "  accounts/account2.txt",
+                "  accounts/account3.txt",
+                "",
+                "Then run:",
+                "  !account rescan",
+            ]));
+        }
+
+        mgr.rescanNow();
+        if (mgr.isSingleAccount()) {
+            return message.reply(ui.warn("Invalid Cookies", "account2.txt found but cookies appear invalid."));
+        }
+    }
+
+    if (!mgr.canSwitch()) {
+        const cd = mgr.getCooldownRemaining?.() || 20000;
+        return message.reply(ui.warn("Cooldown Active", `Please wait ${Math.ceil(cd / 1000)}s before switching again.`));
+    }
+
+    const prev = mgr.getStats().currentAccount || "?";
+    let switched = false;
+
+    try {
+        const fn = global.switchToNextAccount;
+        if (typeof fn === "function") {
+            switched = await fn("Manual switch via account switch");
+        }
+    } catch (_) {}
+
+    if (!switched) {
+        try { mgr.nextAccount?.("manual_switch"); switched = true; } catch (_) {}
+    }
+
+    const after = mgr.getStats().currentAccount || "?";
+
+    if (switched) {
+        return message.reply(ui.box("🔄 ACCOUNT SWITCH", [
+            "✅ Switch complete!",
+            ui.RULE,
+            ui.kv("From", prev,  "▸"),
+            ui.kv("To",   after, "▸"),
+            ui.kv("Time", now(), "▸"),
+            ui.RULE,
+            "Bot is reconnecting with new account...",
+        ]));
+    }
+
+    return message.reply(ui.warn("Switch Failed", `Could not switch automatically.\nCurrent: ${after}\nTry: !account rescan first.`));
+}
+
+async function doSwitchToSlot(message, mgr, slot) {
+    const stats = mgr.getStats();
+    const acc   = stats.accounts?.[slot - 1];
+
+    if (!acc) return message.reply(ui.error("Invalid Slot", `Slot ${slot} doesn't exist. Valid: 1–${stats.accounts?.length || 1}`));
+    if (acc.name === stats.currentAccount) return message.reply(ui.warn("Already Active", `${acc.name} is already active.`));
+    if (!mgr.canSwitch()) return message.reply(ui.warn("Cooldown Active", "Wait a moment before switching."));
+
+    try {
+        const full = accDir(acc.name);
+        const idx  = mgr.accounts.indexOf(full);
+        if (idx > 0) { mgr.accounts.splice(idx, 1); mgr.accounts.unshift(full); mgr.currentIndex = 0; }
+    } catch (_) {}
+
+    const fn = global.switchToNextAccount;
+    let ok = false;
+    try { ok = await fn?.(`Switched to slot ${slot} via account switch ${slot}`); } catch (_) {}
+
+    return message.reply(ok
+        ? ui.box("🔄 ACCOUNT SWITCH", [
+            `✅ Switched to slot ${slot}`,
+            ui.RULE,
+            ui.kv("Account", acc.name, "▸"),
+            ui.kv("Time",    now(),    "▸"),
+          ])
+        : ui.warn("Partial Switch", `Pointer moved to ${acc.name}.\nFull reconnect may nidx} DETAIL`, [
+        ui.kv("Slot",         String(idx),                                          "▸"),
+        ui.kv("Filename",     acc.name,                                            "▸"),
+        ui.kv("Status",       acc.name === cur ? "🟢 ACTIVE" : "⚪ STANDBY",       "▸"),
+        ui.RULE,
+        ui.kv("Health Score", scoreBar(acc.score),                                 "▸"),
+        ui.kv("Health Grade", healthLabel(acc.score),                              "▸"),
+        ui.kv("Circuit",      `${circuitIcon(acc.circuitState)} ${acc.circuitState}`, "▸"),
+        ui.RULE,
+        ui.kv("Failures",     String(acc.failureCount),                            "▸"),
+        ui.kv("Successes",    String(acc.successCount || 0),                       "▸"),
+    ], { footer: `checked at ${now()}` }));
+}
+
+async function doSwitch(message, mgr, targetArg) {
+    if (targetArg && !isNaN(targetArg)) {
+        return doSwitchToSlot(message, mgr, parseInt(targetArg));
+    }
+
+    if (mgr.isSingleAccount()) {
+        const a2 = accDir("account2.txt");
+        const a3 = accDir("account3.txt");
+        const has2 = fs.existsSync(a2) && fs.statSync(a2).size > 10;
+        const has3 = fs.existsSync(a3) && fs.statSync(a3).size > 10;
+
+        if (!has2 && !has3) {
+            return message.reply(ui.box("🔐 ACCOUNT SWITCH", [
+                "❌ Only 1 account registered.",
+                ui.RULE,
+                "To enable failover, add more accounts:",
+                "  accounts/account2.txt",
+                "  accounts/account3.txt",} DETAIL`, [
+        ui.kv("Slot",         String(idx),                                          "▸"),
+        ui.kv("Filename",     acc.name,                                            "▸"),
+        ui.kv("Status",       acc.name === cur ? "🟢 ACTIVE" : "⚪ STANDBY",       "▸"),
+        ui.RULE,
+        ui.kv("Health Score", scoreBar(acc.score),                                 "▸"),
+        ui.kv("Health Grade", healthLabel(acc.score),                              "▸"),
+        ui.kv("Circuit",      `${circuitIcon(acc.circuitState)} ${acc.circuitState}`, "▸"),
+        ui.RULE,
+        ui.kv("Failures",     String(acc.failureCount),                            "▸"),
+        ui.kv("Successes",    String(acc.successCount || 0),                       "▸"),
+    ], { footer: `checked at ${now()}` }));
+}
+
+async function doSwitch(message, mgr, targetArg) {
+    if (targetArg && !isNaN(targetArg)) {
+        return doSwitchToSlot(message, mgr, parseInt(targetArg));
+    }
+
+    if (mgr.isSingleAccount()) {
+        const a2 = accDir("account2.txt");
+        const a3 = accDir("account3.txt");
+        const has2 = fs.existsSync(a2) && fs.statSync(a2).size > 10;
+        const has3 = fs.existsSync(a3) && fs.statSync(a3).size > 10;
+
+        if (!has2 && !has3) {
+            return message.reply(ui.box("🔐 ACCOUNT SWITCH", [
+                "❌ Only 1 account registered.",
+                ui.RULE,
+                "To enable failover, add more accounts:",
+                "  accounts/account2.txt",
+                "  accounts/account3.txt",
+                "",
+                "Then run:",
+                "  !account rescan",
+            ]));
+        }
+
+        mgr.rescanNow();
+        if (mgr.isSingleAccount()) {
+            return message.reply(ui.warn("Invalid Cookies", "account2.txt found but cookies appear invalid."));
+        }
+    }
+
+    if (!mgr.canSwitch()) {
+        const cd = mgr.getCooldownRemaining?.() || 20000;
+        return message.reply(ui.warn("Cooldown Active", `Please wait ${Math.ceil(cd / 1000)}s before switching again.`));
+    }
+
+    const prev = mgr.getStats().currentAccount || "?";
+    let switched = false;
+
+    try {
+        const fn = global.switchToNextAccount;
+        if (typeof fn === "function") {
+            switched = await fn("Manual switch via account switch");
+        }
+    } catch (_) {}
+
+    if (!switched) {
+        try { mgr.nextAccount?.("manual_switch"); switched = true; } catch (_) {}
+    }
+
+    const after = mgr.getStats().currentAccount || "?";
+
+    if (switched) {
+        return message.reply(ui.box("🔄 ACCOUNT SWITCH", [
+            "✅ Switch complete!",
+            ui.RULE,
+            ui.kv("From", prev,  "▸"),
+            ui.kv("To",   after, "▸"),
+            ui.kv("Time", now(), "▸"),
+            ui.RULE,
+            "Bot is reconnecting with new account...",
+        ]));
+    }
+
+    return message.reply(ui.warn("Switch Failed", `Could not switch automatically.\nCurrent: ${after}\nTry: !account rescan first.`));
+}
+
+async function doSwitchToSlot(message, mgr, slot) {
+    const stats = mgr.getStats();
+    const acc   = stats.accounts?.[slot - 1];
+
+    if (!acc) return message.reply(ui.error("Invalid Slot", `Slot ${slot} doesn't exist. Valid: 1–${stats.accounts?.length || 1}`));
+    if (acc.name === stats.currentAccount) return message.reply(ui.warn("Already Active", `${acc.name} is already active.`));
+    if (!mgr.canSwitch()) return message.reply(ui.warn("Cooldown Active", "Wait a moment before switching."));
+
+    try {
+        const full = accDir(acc.name);
+        const idx  = mgr.accounts.indexOf(full);
+        if (idx > 0) { mgr.accounts.splice(idx, 1); mgr.accounts.unshift(full); mgr.currentIndex = 0; }
+    } catch (_) {}
+
+    const fn = global.switchToNextAccount;
+    let ok = false;
+    try { ok = await fn?.(`Switched to slot ${slot} via account switch ${slot}`); } catch (_) {}
+
+    return message.reply(ok
+        ? ui.box("🔄 ACCOUNT SWITCH", [
+            `✅ Switched to slot ${slot}`,
+            ui.RULE,
+            ui.kv("Account", acc.name, "▸"),
+            ui.kv("Time",    now(),    "▸"),
+          ])
+        : ui.warn("Partial Switch", `Pointer moved to ${acc.name}.\nFull reconnect may nidx} DETAIL`, [
+        ui.kv("Slot",         String(idx),                                          "▸"),
+        ui.kv("Filename",     acc.name,                                            "▸"),
+        ui.kv("Status",       acc.name === cur ? "🟢 ACTIVE" : "⚪ STANDBY",       "▸"),
+        ui.RULE,
+        ui.kv("Health Score", scoreBar(acc.score),                                 "▸"),
+        ui.kv("Health Grade", healthLabel(acc.score),                              "▸"),
+        ui.kv("Circuit",      `${circuitIcon(acc.circuitState)} ${acc.circuitState}`, "▸"),
+        ui.RULE,
+        ui.kv("Failures",     String(acc.failureCount),                            "▸"),
+        ui.kv("Successes",    String(acc.successCount || 0),                       "▸"),
+    ], { footer: `checked at ${now()}` }));
+}
+
+async function doSwitch(message, mgr, targetArg) {
+    if (targetArg && !isNaN(targetArg)) {
+        return doSwitchToSlot(message, mgr, parseInt(targetArg));
+    }
+
+    if (mgr.isSingleAccount()) {
+        const a2 = accDir("account2.txt");
+        const a3 = accDir("account3.txt");
+        const has2 = fs.existsSync(a2) && fs.statSync(a2).size > 10;
+        const has3 = fs.existsSync(a3) && fs.statSync(a3).size > 10;
+
+        if (!has2 && !has3) {
+            return message.reply(ui.box("🔐 ACCOUNT SWITCH", [
+                "❌ Only 1 account registered.",
+                ui.RULE,
+                "To enable failover, add more accounts:",
+                "  accounts/account2.txt",
+                "  accounts/account3.txt",
+                "",
+                "Then run:",
+                "  !account rescan",
+            ]));
+        }
+
+        mgr.rescanNow();
+        if (mgr.isSingleAccount()) {
+            return message.reply(ui.warn("Invalid Cookies", "account2.txt found but cookies appear invalid."));
+        }
+    }
+
+    if (!mgr.canSwitch()) {
+        const cd = mgr.getCooldownRemaining?.() || 20000;
+        return message.reply(ui.warn("Cooldown Active", `Please wait ${Math.ceil(cd / 1000)}s before switching again.`));
+    }
+
+    const prev = mgr.getStats().currentAccount || "?";
+    let switched = false;
+
+    try {
+        const fn = global.switchToNextAccount;
+        if (typeof fn === "function") {
+            switched = await fn("Manual switch via account switch");
+        }
+    } catch (_) {}
+
+    if (!switched) {
+        try { mgr.nextAccount?.("manual_switch"); switched = true; } catch (_) {}
+    }
+
+    const after = mgr.getStats().currentAccount || "?";
+
+    if (switched) {
+        return message.reply(ui.box("🔄 ACCOUNT SWITCH", [
+            "✅ Switch complete!",
+            ui.RULE,
+            ui.kv("From", prev,  "▸"),
+            ui.kv("To",   after, "▸"),
+            ui.kv("Time", now(), "▸"),
+            ui.RULE,
+            "Bot is reconnecting with new account...",
+        ]));
+    }
+
+    return message.reply(ui.warn("Switch Failed", `Could not switch automatically.\nCurrent: ${after}\nTry: !account rescan first.`));
+}
+
+async function doSwitchToSlot(message, mgr, slot) {
+    const stats = mgr.getStats();
+    const acc   = stats.accounts?.[slot - 1];
+
+    if (!acc) return message.reply(ui.error("Invalid Slot", `Slot ${slot} doesn't exist. Valid: 1–${stats.accounts?.length || 1}`));
+    if (acc.name === stats.currentAccount) return message.reply(ui.warn("Already Active", `${acc.name} is already active.`));
+    if (!mgr.canSwitch()) return message.reply(ui.warn("Cooldown Active", "Wait a moment before switching."));
+
+    try {
+        const full = accDir(acc.name);
+        const idx  = mgr.accounts.indexOf(full);
+        if (idx > 0) { mgr.accounts.splice(idx, 1); mgr.accounts.unshift(full); mgr.currentIndex = 0; }
+    } catch (_) {}
+
+    const fn = global.switchToNextAccount;
+    let ok = false;
+    try { ok = await fn?.(`Switched to slot ${slot} via account switch ${slot}`); } catch (_) {}
+
+    return message.reply(ok
+        ? ui.box("🔄 ACCOUNT SWITCH", [
+            `✅ Switched to slot ${slot}`,
+            ui.RULE,
+            ui.kv("Account", acc.name, "▸"),
+            ui.kv("Time",    now(),    "▸"),
+          ])
+        : ui.warn("Partial Switch", `Pointer moved to ${acc.name}.\nFull reconnect may nt slot ${idx}. Valid range: 1–${stats.accounts?.length || 0}`));
+    }
+
+    const cur = stats.currentAccount || "";
+    return message.reply(ui.box(`🔍 ACCOUNT ${idx} DETAIL`, [
+        ui.kv("Slot",         String(idx),                                          "▸"),
+        ui.kv("Filename",     acc.name,                                            "▸"),
+        ui.kv("Status",       acc.name === cur ? "🟢 ACTIVE" : "⚪ STANDBY",       "▸"),
+        ui.RULE,
+        ui.kv("Health Score", scoreBar(acc.score),                                 "▸"),
+        ui.kv("Health Grade", healthLabel(acc.score),                              "▸"),
+        ui.kv("Circuit",      `${circuitIcon(acc.circuitState)} ${acc.circuitState}`, "▸"),
+        ui.RULE,
+        ui.kv("Failures",     String(acc.failureCount),                            "▸"),
+        ui.kv("Successes",    String(acc.successCount || 0),                       "▸"),
+    ], { footer: `checked at ${now()}` }));
+}
+
+async function doSwitch(message, mgr, targetArg) {
+    if (targetArg && !isNaN(targetArg)) {
+        return doSwitchToSlot(message, mgr, parseInt(targetArg));
+    }
+
+    if (mgr.isSingleAccount()) {
+        const a2 = accDir("account2.txt");
+        const a3 = accDir("account3.txt");
+        const has2 = fs.existsSync(a2) && fs.statSync(a2).size > 10;
+        const has3 = fs.existsSync(a3) && fs.statSync(a3).size > 10;
+
+        if (!has2 && !has3) {
+            return message.reply(ui.box("🔐 ACCOUNT SWITCH", [
+                "❌ Only 1 account registered.",
+                ui.RULE,
+                "To enable failover, add more accounts:",
+                "  accounts/account2.txt",
+                "  accounts/account3.txt",
+                "",
+                "Then run:",
+                "  !account rescan",
+            ]));
+        }
+
+        mgr.rescanNow();
+        if (mgr.isSingleAccount()) {
+            return message.reply(ui.warn("Invalid Cookies", "account2.txt found but cookies appear invalid."));
+        }
+    }
+
+    if (!mgr.canSwitch()) {
+        const cd = mgr.getCooldownRemaining?.() || 20000;
+        return message.reply(ui.warn("Cooldown Active", `Please wait ${Math.ceil(cd / 1000)}s before switching again.`));
+    }
+
+    const prev = mgr.getStats().currentAccount || "?";
+    let switched = false;
+
+    try {
+        const fn = global.switchToNextAccount;
+        if (typeof fn === "function") {
+            switched = await fn("Manual switch via account switch");
+        }
+    } catch (_) {}
+
+    if (!switched) {
+        try { mgr.nextAccount?.("manual_switch"); switched = true; } catch (_) {}
+    }
+
+    const after = mgr.getStats().currentAccount || "?";
+
+    if (switched) {
+        return message.reply(ui.box("🔄 ACCOUNT SWITCH", [
+            "✅ Switch complete!",
+   ureCount), ""));
+            rows.push(ui.RULE);
+        }
+    }
+
+    rows.push(`💡 ${pfx}account switch  •  ${pfx}account rescan`);
+
+    return message.reply(ui.box("🔐 ACCOUNT STATUS", rows, { footer: `checked at ${now()}` }));
+}
+
+async function showList(message, mgr, pfx) {
+    const stats = mgr.getStats();
+    const cur   = stats.currentAccount || "";
+
+    if (!stats.accounts?.length) {
+        return message.reply(ui.box("🔐 ACCOUNT LIST", [
+            "❌ No accounts registered.",
+            ui.RULE,
+            "Add cookies to:",
+            "  accounts/account2.txt",
+            "Then run:",
+            `  ${pfx}account rescan`,
+        ]));
+    }
+
+    const items = stats.accounts.map((a, i) => {
+        const active  = a.name === cur ? " ◄ ACTIVE" : "";
+        const icon    = circuitIcon(a.circuitState);
+        const bar     = scoreBar(a.score);
+        return `${i + 1}. ${icon} ${a.name}${active}\n   ${bar}  •  ${a.circuitState}`;
+    });
+
+    items.push(ui.RULE);
+    items.push(`📊 Total: ${stats.totalAccounts}  •  Available: ${stats.availableAccounts}`);
+
+    return message.reply(ui.box("🔐 ACCOUNT LIST", items, { footer: `${pfx}account detail <n>  for full info` }));
+}
+
+async function showDetail(message, mgr, idx) {
+    const stats = mgr.getStats();
+    const acc   = stats.accounts?.[idx - 1];
+
+    if (!acc) {
+        return message.reply(ui.warn("Not Foun  role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr, par       role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr, ",
+        role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, m",
         role    : 2,
         shortDescription: { en: "Manage bot Facebook accounts" },
         longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
@@ -92,6 +847,83 @@ module.exports = {
 
             case "detail":
             case "view":
+                return showDetail(message, mgr, parseInt(args[1]) || 1);
+
+            case "pin":
+            case "prefer":
+                return doPin(message, mgr, args[1]);
+
+            case "help":
+            case "h":
+            default:
+                return showHelp(message, pfx);
+        }
+    },
+};
+
+async function showStatus(message, mgr, pfx) {
+    const stats = mgr.getStats();
+    const cur   = stats.currentAccount || "none";
+
+    const rows = [
+        ui.kv("Active Account", cur, "📡"),
+        ui.kv("Slot",           `${(stats.currentIndex ?? 0) + 1} / ${stats.totalAccounts}`, "🔢"),
+        ui.kv("Available",      `${stats.availableAccounts} / ${stats.totalAccounts}`, "✅"),
+        ui.kv("Total Switches", String(stats.switchCount), "↻"),
+        ui.kv("Can Switch",     stats.canSwitch ? "✅ Yes" : "⏳ Cooldown active", "🔄"),
+        ui.kv("Uptime",         stats.uptime || "?", "⏱️"),
+        ui.RULE,
+    ];
+
+    if (stats.accounts?.length) {
+        for (const a of stats.accounts) {
+            const isCur = a.name === cur;
+            const icon  = circuitIcon(a.circuitState);
+            const label = isCur ? `${a.name}  ◄ ACTIVE` : a.name;
+            rows.push(ui.kv(`${icon} ${label}`, healthLabel(a.score), ""));
+            rows.push(ui.kv("  Health Bar",    scoreBar(a.score), ""));
+            rows.push(ui.kv("  Circuit",       a.circuitState, ""));
+            rows.push(ui.kv("  Failures",      String(a.failureCount), ""));
+            rows.push(ui.RULE);
+        }
+    }
+
+    rows.push(`💡 ${pfx}account switch  •  ${pfx}account rescan`);
+
+    return message.reply(ui.box("🔐 ACCOUNT STATUS", rows, { footer: `checked at ${now()}` }));
+}
+
+async function showList(message, mgr, pfx) {
+    const stats = mgr.getStats();
+    const cur   = stats.currentAccount || "";
+
+    if (!stats.accounts?.length) {
+        return message.reply(ui.box("🔐 ACCOUNT LIST", [
+            "❌ No accounts registered.",
+            ui.RULE,
+            "Add cookies to:",
+            "  accounts/account2.txt",
+            "Then run:",
+            `  ${pfx}account rescan`,
+        ]));
+    }
+
+    const items = stats.accounts.map((a, i) => {
+        const active  = a.name === cur ? " ◄ ACTIVE" : "";
+        const icon    = circuitIcon(a.circuitState);
+        const bar     = scoreBar(a.score);
+        return `${i + 1}. ${icon} ${a.name}${active}\n   ${bar}  •  ${a.circuitState}`;
+    });
+
+    items.push(ui.RULE);
+    items.push(`📊 Total: ${stats.totalAccounts}  •  Available: ${stats.availableAccounts}`);
+
+    return message.reply(ui.box("🔐 ACCOUNT LIST", items, { footer: `${pfx}account detail <n>  for full info` }));
+}
+
+async function showDetail(message, mgr, idx) {
+    const stats = mgr.getStats();
+    const ac":
                 return showDetail(message, mgr, parseInt(args[1]) || 1);
 
             case "pin":
