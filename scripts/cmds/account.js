@@ -49,7 +49,92 @@ module.exports = {
         name    : "account",
         aliases : ["acc", "acct", "accsw"],
         version : "2.0.0",
-        author  : "shishir  role    : 2,
+        author  : "shishir"      : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr,parseI  ro  role    : 2,
+        shortDescription: { en: "Manage bot Facebook accounts" },
+        longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
+        category : "system",
+        guide    : { en: "{pn} [status|list|switch|rescan|reset|info <n>|pin <n>]" },
+        priority : 1,
+        countDown: 3,
+    },
+
+    onStart: async function ({ api, event, args, message, prefix }) {
+        const sub = (args[0] || "status").toLowerCase();
+        const mgr = require("../../core/auth/accountRegistry");
+        const pfx = prefix || global.GoatBot?.config?.prefix || "'";
+
+        switch (sub) {
+            case "status":
+            case "s":
+            case "info":
+                return showStatus(message, mgr, pfx);
+
+            case "list":
+            case "ls":
+            case "l":
+                return showList(message, mgr, pfx);
+
+            case "switch":
+            case "sw":
+            case "next":
+                return doSwitch(message, mgr, args[1]);
+
+            case "rescan":
+            case "scan":
+            case "refresh":
+                return doRescan(message, mgr);
+
+            case "reset":
+            case "fix":
+            case "repair":
+                return doReset(message, mgr);
+
+            case "detail":
+            case "":
+                return showDetail(message, mgr,parseI  role    : 2,
+    : 2,
         shortDescription: { en: "Manage bot Facebook accounts" },
         longDescription : { en: "View health, switch, rescan, reset circuit breakers — full account management from Messenger." },
         category : "system",
