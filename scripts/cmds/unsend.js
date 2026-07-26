@@ -3,8 +3,30 @@ module.exports = {
 		name: "unsend",
 		aliases: ["u", "uns", "del"],
 		version: "2.0.0",
-		author: "SIFAT",
-		countDown: 3,
+		author: "Shishir: 3,
+		role: 0,
+		description: { en: "ᴜɴꜱᴇɴᴅ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ" },
+		category: "utility",
+		guide: { en: "ʀᴇᴘʟʏ ᴛᴇ ʙᴏᴛcountDown: 3,
+		role: 0,
+		description: { en: "ᴜɴꜱᴇɴᴅ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ" },
+		category: "utility",
+		guide: { en: "ʀᴇᴘʟʏ ᴛᴇ ʙᴏᴛ ᴍᴇtDown: 3,
+		role: 0,
+		description: { en: "ᴜɴꜱᴇɴᴅ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ" },
+		category: "utility",
+		guide: { en",
+		ʜᴇ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ ᴀɴᴅ ᴄᴀʟʟ {pn}" }
+	},
+
+	langs: {
+		en: {
+			syntaxError: "⌀ ʀᴇᴘʟʏ ᴛʜᴇ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʀᴇᴍᴏᴠᴇ",
+			noPerms:     "⌀ ᴛʜᴀᴛ ᴍᴇꜱꜱᴀɢᴇ ᴡᴀꜱ ɴᴏᴛ ꜱᴇɴᴛ ʙʏ ᴛʜᴇ ʙᴏᴛ"
+		}
+	},
+
+	onStart: async function ({ message, event, api, gountDown: 3,
 		role: 0,
 		description: { en: "ᴜɴꜱᴇɴᴅ ʙᴏᴛ ᴍᴇꜱꜱᴀɢᴇ" },
 		category: "utility",
