@@ -48,7 +48,88 @@ module.exports = {
 		name:        "adminonly",
 		aliases:     ["ao", "aonly"],
 		version:     "3.0.0",
-		author:      "SIFAT",
+		author:      "shishir",countDown:   3,
+		role:        2,
+		description: { en: "ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ ᴍᴀɴᴀɢᴇʀ" },
+		category:    "owner",
+		guide: {
+			en: [
+				"   {pn} on              — ᴇɴᴀʙʟᴇ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ",
+				"   {pn} off             — ᴅɪꜱᴀʙʟᴇ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ",
+				"   {pn} status          — ꜱʜᴏᴡ ꜰᴜʟʟ ꜱᴛᴀᴛᴜꜱ",
+				"",
+				"   {pn} ignore add <cmd [cmd2 ...]>  — ᴇxᴇᴍᴘᴛ ᴄᴍᴅꜱ",
+				"   {pn} ignore remove <cmd>           — ʀᴇᴍᴏᴠᴇ ᴇxᴇᴍᴘᴛɪᴏɴ",
+				"   {pn} ignore list                   — ʟɪꜱᴛ ᴇxᴇᴍᴘᴛᴇᴅ ᴄᴍᴅꜱ",
+				"   {pn} ignore clear                  — ᴄʟᴇᴀʀ ᴀʟʟ ᴇxᴇᴍᴘᴛɪᴏɴꜱ",
+				"",
+				"   {pn} whitelist add [@|uid|reply]  — ᴀʟʟᴏᴡ ᴜꜱᴇʀ ᴛᴏ ʙʏᴘᴀꜱꜱ",
+				"   {pn} whitelist remove [@|uid]      — ʀᴇᴍᴏᴠᴇ ᴜꜱᴇʀ ʙʏᴘᴀꜱꜱ",
+				"   {pn} whitelist list                — ʟɪꜱᴛ ᴡʜɪᴛᴇʟɪꜱᴛᴇᴅ ᴜꜱᴇʀꜱ",
+				"   {pn} whitelist clear               — ᴄʟᴇᴀʀ ᴀʟʟ ᴡʜɪᴛᴇʟɪꜱᴛ",
+				"",
+				"   {pn} cmds           — ʟɪꜱᴛ ᴀʟʟ ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅꜱ"
+			].join("\n")
+		}
+	},
+
+	langs: {
+		en: {
+
+			statusHeader:   "❏ ᴀᴅᴍɪɴ-ᴏɴʟʏ ꜱᴛᴀᴛᴜꜱ\n",
+			statusMode:     "◈ ᴍᴏᴅᴇ       : %1\n",
+			statusUptime:   "◈ ᴜᴘᴛɪᴍᴇ     : %1\n",
+			statusIgnore:   "◈ ɪɢɴᴏʀᴇᴅ    : %1 ᴄᴍᴅ(ꜱ)\n",
+			statusWhite:    "◈ ᴡʜɪᴛᴇʟɪꜱᴛ  : %1 ᴜꜱᴇʀ(ꜱ)\n",
+			statusAdmins:   "◈ ᴀᴅᴍɪɴꜱ     : %1",
+
+			enabled:        "✦ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴇɴᴀʙʟᴇᴅ ✔\n◈ ᴏɴʟʏ ʙᴏᴛ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ᴜꜱᴇ ᴛʜᴇ ʙᴏᴛ",
+			disabled:       "✦ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴅɪꜱᴀʙʟᴇᴅ ✘\n◈ ᴇᴠᴇʀʏᴏɴᴇ ᴄᴀɴ ɴᴏᴡ ᴜꜱᴇ ᴛʜᴇ ʙᴏᴛ",
+			alreadyOn:      "⌀ ᴀᴅᴍɪɴ-ᴏɴʟʏ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴇɴᴀʙʟᴇᴅ",
+			alreadyOff:     "⌀ ᴀᴅᴍɪɴ-ᴏɴʟʏ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴅɪꜱᴀʙʟᴇᴅ",
+
+			ignoreAdded:    "✦ ɪɢɴᴏʀᴇ ʟɪꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ\n◈ ᴀᴅᴅᴇᴅ    : %1\n◈ ᴅᴜᴘʟɪᴄᴀᴛᴇ : %2\n◈ ɴᴏᴛ ꜰᴏᴜɴᴅ",
+		countDown:   3,
+		role:        2,
+		description: { en: "ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ ᴍᴀɴᴀɢᴇʀ" },
+		category:    "owner",
+		guide: {
+			en: [
+				"   {pn} on              — ᴇɴᴀʙʟᴇ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ",
+				"   {pn} off             — ᴅɪꜱᴀʙʟᴇ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ",
+				"   {pn} status          — ꜱʜᴏᴡ ꜰᴜʟʟ ꜱᴛᴀᴛᴜꜱ",
+				"",
+				"   {pn} ignore add <cmd [cmd2 ...]>  — ᴇxᴇᴍᴘᴛ ᴄᴍᴅꜱ",
+				"   {pn} ignore remove <cmd>           — ʀᴇᴍᴏᴠᴇ ᴇxᴇᴍᴘᴛɪᴏɴ",
+				"   {pn} ignore list                   — ʟɪꜱᴛ ᴇxᴇᴍᴘᴛᴇᴅ ᴄᴍᴅꜱ",
+				"   {pn} ignore clear                  — ᴄʟᴇᴀʀ ᴀʟʟ ᴇxᴇᴍᴘᴛɪᴏɴꜱ",
+				"",
+				"   {pn} whitelist add [@|uid|reply]  — ᴀʟʟᴏᴡ ᴜꜱᴇʀ ᴛᴏ ʙʏᴘᴀꜱꜱ",
+				"   {pn} whitelist remove [@|uid]      — ʀᴇᴍᴏᴠᴇ ᴜꜱᴇʀ ʙʏᴘᴀꜱꜱ",
+				"   {pn} whitelist list                — ʟɪꜱᴛ ᴡʜɪᴛᴇʟɪꜱᴛᴇᴅ ᴜꜱᴇʀꜱ",
+				"   {pn} whitelist clear               — ᴄʟᴇᴀʀ ᴀʟʟ ᴡʜɪᴛᴇʟɪꜱᴛ",
+				"",
+				"   {pn} cmds           — ʟɪꜱᴛ ᴀʟʟ ᴀᴠᴀɪʟᴀʙʟᴇ ᴄᴏᴍᴍᴀɴᴅꜱ"
+			].join("\n")
+		}
+	},
+
+	langs: {
+		en: {
+
+			statusHeader:   "❏ ᴀᴅᴍɪɴ-ᴏɴʟʏ ꜱᴛᴀᴛᴜꜱ\n",
+			statusMode:     "◈ ᴍᴏᴅᴇ       : %1\n",
+			statusUptime:   "◈ ᴜᴘᴛɪᴍᴇ     : %1\n",
+			statusIgnore:   "◈ ɪɢɴᴏʀᴇᴅ    : %1 ᴄᴍᴅ(ꜱ)\n",
+			statusWhite:    "◈ ᴡʜɪᴛᴇʟɪꜱᴛ  : %1 ᴜꜱᴇʀ(ꜱ)\n",
+			statusAdmins:   "◈ ᴀᴅᴍɪɴꜱ     : %1",
+
+			enabled:        "✦ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴇɴᴀʙʟᴇᴅ ✔\n◈ ᴏɴʟʏ ʙᴏᴛ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ᴜꜱᴇ ᴛʜᴇ ʙᴏᴛ",
+			disabled:       "✦ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴅɪꜱᴀʙʟᴇᴅ ✘\n◈ ᴇᴠᴇʀʏᴏɴᴇ ᴄᴀɴ ɴᴏᴡ ᴜꜱᴇ ᴛʜᴇ ʙᴏᴛ",
+			alreadyOn:      "⌀ ᴀᴅᴍɪɴ-ᴏɴʟʏ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴇɴᴀʙʟᴇᴅ",
+			alreadyOff:     "⌀ ᴀᴅᴍɪɴ-ᴏɴʟʏ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴅɪꜱᴀʙʟᴇᴅ",
+
+			ignoreAdded:    "✦ ɪɢɴᴏʀᴇ ʟɪꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ\n◈ ᴀᴅᴅᴇᴅ    : %1\n◈ ᴅᴜᴘʟɪᴄᴀᴛ",
 		countDown:   3,
 		role:        2,
 		description: { en: "ᴀᴅᴠᴀɴᴄᴇᴅ ᴀᴅᴍɪɴ-ᴏɴʟʏ ᴍᴏᴅᴇ ᴍᴀɴᴀɢᴇʀ" },
