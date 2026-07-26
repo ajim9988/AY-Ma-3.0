@@ -27,7 +27,7 @@ module.exports = {
     name: "help",
     aliases: ["menu"],
     version: "6.0",
-    author: "𝐒𝐈𝐅𝐀𝐓",
+    author: "shishir",
     shortDescription: "Show all available commands",
     longDescription: "Displays a categorized command list with a rotating video (different every time).",
     category: "system",
@@ -53,6 +53,98 @@ module.exports = {
       const cachedCategories = {};
       for (const [name, cmd] of allCommands) {
         if (!cmd?.config || name === "help") continue;
+        const cat = cleanCategoryName(cmd.config.category);
+        if (!cachedCategories[cat]) cachedCategories[cat] = [];
+        cachedCategories[cat].push(name);
+      }
+      global.GoatBot.cacheHelp = cachedCategories;
+    }
+    const categoriesList = global.GoatBot.cacheHelp;
+
+    const videoURLs = [
+      "https://i.imgur.com/IudwgaP.mp4",
+      "https://i.imgur.com/AMv8IqG.mp4",
+      "https://i.imgur.com/xhFp4Rc.mp4",
+      "https://i.imgur.com/EXar1VY.mp4",
+      "https://i.imgur.com/vWigmIF.mp4",
+      "https://i.imgur.com/V6Au0p4.mp4"
+    ];
+
+    const cacheDir = path.join(__dirname, "cache");
+    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+
+    const indexFile = pjoin(cacheDir, "help_video_index.json");
+    let index = 0;
+    if (fs.existsSync(indexFile)) {
+      try {
+        index = (JSON.parse(fs.readFileSync(indexFile)).index + 1) % videoURLs.length;
+      } catch {}
+    }
+    fs.writeFileSync(indexFile, JSON.stringify({ index }));
+
+    const videoPath = path.join(cacheDir, `help_video_${index}.mp4`);
+    if (!fs.existsSync(videoPath)) {
+      await downloadFile(videoURLs[index], videoPath);
+    }
+
+    if (args[0]) {
+      const query = args[0].toLowerCase();
+      const cmd = allCommands.get(query) || [...allCommands.values()].find(c => (c.config?.aliases || []).map(a => a.toLowerCase()).includes(query));
+
+      if (!cmd || !cmd.config) return message.reply(`❌ Command "${query}" not found.`);
+
+      const { name, version, author, guide, category, longDescription, shortDescription, aliases } = cmd.config;
+      const desc = longDescription?.en || longDescription || shortDescription?.en || shortDescription || "No description";
+      const usage = (guide?.en || guide || `{pn}${name}`).replace(/{pn}/g, prefix).replace(/{name}/g, name);
+
+      const detailMsg =
+        `╭┈─────┈─ ─┈────┈╮\n` +
+        `  🌸 𝗖𝗢𝗠𝗠𝗔𝗡𝗗 𝗜𝗡𝗙𝗢 🌸\n` +
+        `╰┈─────┈─ ─┈────┈╯\n\n` +
+        ` 🪷 𝐍𝐚𝐦𝐞: ${toSmallCaps(name)}\n` +
+        ` 🪷 𝐂𝐚𝐭𝐞𝐠𝐨𝐫𝐲: ${toSmallCaps(category || "General")}\n` +
+        ` 🪷 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${aliases?.length ? aliases.join(", ") : "None"}\n` +
+        ` 🪷 𝐕𝐞𝐫𝐬𝐢𝐨𝐧: ${version || "1.0"}\n` +
+        ` 🪷 𝐀𝐮𝐭𝐡𝐨𝐫: ${author || "S1FU"}\n\n` +
+        ` ┌──────ʚ🍄ɞ──────┐\n` +
+        `  📖 𝐃𝐞𝐬𝐜: ${desc}\n\n` +
+        `  💡 𝐔𝐬𝐚𝐠𝐞: ${usage}\n` +
+        ` └──────ʚ🍄ɞ──────┘\n\n` +
+        ` 🌸𝐒𝐭𝐚𝐲 𝐇𝐚𝐩𝐩𝐲&𝐁𝐞𝐚𝐮𝐭𝐢𝐟𝐮𝐥🌸\n` +
+        `╰┈───┈──────┈───┈╯`;
+
+      return message.reply({ body: detailMsg, attachment: fs.createReadStream(videoPath) });
+    }
+
+
+    let msg = `╭┈─────┈──┈─────┈╮\n` +
+              `       🌸 𝐁𝐎𝐓 𝐌𝐄𝐍𝐔 🌸\n` +
+              `╰┈─────┈──┈─────┈╯\n\n`;
+
+    const sortedCategories = Object.keys(categoriesList).sort();
+
+    for (const cat of sortedCategories) {
+      msg += `╭┈─┈━[🌸 ${toSmallCaps(cat)} ]\n`;
+      const commands = categoriesList[cat].sort();
+      for join(cacheDir, "help_video_index.json");
+    let index = 0;
+    if (fs.existsSync(indexFile)) {
+      try {
+        index = (JSON.parse(fs.readFileSync(indexFile)).index + 1) % videoURLs.length;
+      } catch {}
+    }
+    fs.writeFileSync(indexFile, JSON.stringify({ index }));
+
+    const videoPath = path.join(cacheDir, `help_video_${index}.mp4`);
+    if (!fs.existsSync(videoPath)) {
+      await downloadFile(videoURLs[index], videoPath);
+    }
+
+    if (args[0]) {
+      const query = args[0].toLowerCase();
+      const cmd = allCommands.get(query) || [...allCommands.values()].find(c => (c.config?.aliases || []).map(a => a.toLowerCase()).includes(query));
+
+      if (!cmd || !cmd.config) return message.reply(`❌ Command "${query}" not fou === "help") continue;
         const cat = cleanCategoryName(cmd.config.category);
         if (!cachedCategories[cat]) cachedCategories[cat] = [];
         cachedCategories[cat].push(name);
