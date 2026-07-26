@@ -3,7 +3,636 @@ const os   = require("os");
 const fs   = require("fs-extra");
 const path = require("path");
 
-const DEVELOPER   = "SIFAT";
+const DEVELOPER   = "shishir";
+ BOT_VERSION = "v1.0";
+
+const CYAN    = "#00e5ff";
+const MAGENTA = "#ff00cc";
+const GREEN   = "#39ff14";
+const YELLOW  = "#ffe600";
+const WHITE   = "#e8f8fconst BOT_VERSION = "v1.0";
+
+const CYAN    = "#00e5ff";
+const MAGENTA = "#ff00cc";
+const GREEN   = "#39ff14";
+const YELLOW  = "#ffe600";
+const WHITE   = "#e8f8ff"const DIM     = "#5a8fa8";
+const BG      = "#030e16";
+const BG2     = "#071520";
+const ARCBG   = "#0a1e2a";
+const PURPLE  = "#7c3aed";
+const LIME    = "#aaff0function fmt(s) {
+  s = Math.floor(s);
+  const d   = Math.floor(s / 86400);
+  const h   = Math.floor((s % 86400) / 3600);
+  const m   = Math.floor((s % 3600) / 60);
+sec = s % 60;
+  const p   = [];
+  if (d > 0) p.push(`${d}d`);
+  p.push(`${h}h`, `${m}m`, `${sec}s`);
+  return p.join(" ");
+}
+
+function cpuUsage() {
+  const cpusos.cpus();
+  let idle = 0, total = 0;
+  for (const c of cpus) {
+    for (const v of Object.values(c.times)) total += v;
+    idle += c.timeidle;
+  }
+  return Math.max(0, Math.min(100, 100 - (idle / total) * 100));
+}
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.movx + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,     x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w,y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x,     y + h, x, y + h - r,     r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x,     y,     x +r, y,          r);
+  ctx.closePath();
+}
+
+function glow(ctx, c, b) { ctx.shadowColor = c; ctx.shadowBlur = b; }
+function noGl(ctx)        { ctx.shadowColor = transparent"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h, pct, ca, cb) {
+  ctx.save();
+  rr(ctx, x, y, w, h, h / 2);
+  ctx.fillStyle = ARfill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+ ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbval) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  cbeginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   = AW;
+    ctx.lineCap     = "round";
+    ctx.stroke();
+    noGl(ctx);
+    ctx.restore();
+  }
+
+  ctx.save();
+  glow(ctx, WHITE, 4);
+  ctx.fillStyle  = WHITE;
+  ctx.font       = "bold 21px monospace";
+  ctx.textAlign  = "center";
+  ctx.fillText(val, cx, cy + 7);
+  noGl(ctx); ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = DIM;
+  ctx.font      = "11px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(lbl, cx, cy + 24);
+  ctx.restore();
+}
+
+async function drawCard(d) {
+  const W = 920;
+
+  const ROWS      = 11;
+  const ROW_H      = 44;
+  const ROW_Y0    = 76;
+  const STATS_END = ROW_Y0 + ROWS * ROW_H;
+
+  const HB_Y    = STATS_END + 18;
+  const HB_H    = 10;
+
+  const BOT_SEP = HB_Y + HB_H + 28;
+  const BOT_TXT = BOT_SEP + 28;
+  const TS_Y    = BOT_TXT + 18;
+
+  const H = TS_Y + 18;
+
+  const canvas = createCanvas(W, H);
+  const ctx    = canvas.getContext("2d");
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, BG);
+  bg.addColorStop(1, BG2);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.strokeStyle = "rgba(0,229,255,0.022)";
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+  const rg1 = ctx.createRadialGradient(W * 0.85, 0, 0, W * 0.85, 0, 400);
+  rg1.addColorStop(0, "rgba(124,58,237,0.09)"); rg1.addColorStop(1, "transparent");
+  ctx.fillStyle = rg1; ctx.fillRect(0, 0, W, H);
+
+  const rg2 = ctx.createRadialGradath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   = AW;
+    ctx.lineCap     = "round";
+    ctx.stroke();
+    noGl(ctx);
+    ctx.restore();
+  }
+
+  ctx.save();
+  glow(ctx, WHITE, 4);
+  ctx.fillStyle  = WHITE;
+  ctx.font       = "bold 21px monospace";
+  ctx.textAlign  = "center";
+  ctx.fillText(val, cx, cy + 7);
+  noGl(ctx); ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = DIM;
+  ctx.font      = "11px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(lbl, cx, cy + 24);
+  ctx.restore();
+}
+
+async function drawCard(d) {
+  const W = 920;
+
+  const ROWS      = 11;
+  const ROW_H      = 44;
+  const ROW_Y0    = 76;
+  const STATS_END = ROW_Y0 + ROWS * ROW_H;
+
+  const HB_Y    = STATS_END + 18;
+  const HB_H    = 10;
+
+  const BOT_SEP = HB_Y + HB_H + 28;
+  const BOT_TXT = BOT_SEP + 28;
+  const TS_Y    = BOT_TXT + 18;
+
+  const H = TS_Y + 18;
+
+  const canvas = createCanvas(W, H);
+  const ctx    = canvas.getContext("2d");
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, BG);
+  bg.addColorStop(1, BG2);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.strokeStyle = "rgba(0,229,255,0.022)";
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lival) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   = AW;
+    ctx.lineCap     = "round";
+    ctx.stroke();
+    noGl(ctx);
+    ctx.restore();
+  }
+
+  ctx.save();
+  glow(ctx, WHITE, 4);
+  ctx.fillStyle  = WHITE;
+  ctx.font       = "bold 21px monospace";
+  ctx.textAlign  = "center";
+  ctx.fillText(val, cx, cy + 7);
+  noGl(ctx); ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = DIM;
+  ctx.font      = "11px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(lbl, cx, cy + 24);
+  ctx.restore();
+}
+
+async function drawCard(d) {
+  const W = 920;
+
+  const ROWS      = 11;
+  const ROW_H      = 44;
+  const ROW_Y0    = 76;
+  const STATS_END = ROW_Y0 + ROWS * ROW_H;
+
+  const HB_Y    = STATS_END + 18;
+  const HB_H    = 10;
+
+  const BOT_SEP = HB_Y + HB_H + 28;
+  const BOT_TXT = BOT_SEP + 28;
+  const TS_Y    = BOT_TXT + 18;
+
+  const H = TS_Y + 18;
+
+  const canvas = createCanvas(W, H);
+  const ctx    = canvas.getContext("2d");
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, BG);
+  b(ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbl, val) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   = AW;
+    ctx.lineCap     = "round";
+    ctx.stroke();
+    noGl(ctx);
+    ctx.restore();
+  }
+
+  ctx.save();
+  glow(ctx, WHITE, 4);
+  ctx.fillStyle  = WHITE;
+  ctx.font       = "bold 21px monospace";
+  ctx.textAlign  = "center";
+  ctx.fillText(val, cx, cy + 7);
+  noGl(ctx); ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = DIM;
+  ctx.font      = "11px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(lbl, cx, cy + 24);
+  ctx.restore();
+}
+
+async function drawCard(d) {
+  const W = 920;
+
+  const ROWS      = 11;
+  const ROW_H      = 44;
+  const ROW_Y0    = 76;
+  const STATS_END = ROW_Y0 + ROWS * ROW_H;
+
+  const HB_Y   
+  ctx.fill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+  rr(ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbl, val) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   = AW;
+    ctx.lineCap     = "round";
+    ctx.stroke();
+    noGl(ctx);
+    ctx.restore();
+  }
+
+  ctx.save();
+  glow(ctx, WHITE, 4);
+  ctx.fillStyle  = WHITE;
+  ctx.font       = "bold 21px monospace";
+  ctx.textAlign  = "center";
+  ctx.fillText(val, cx, cy + 7);
+  noGl(ctx); ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = DIM;t"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h, pct, ca, cb) {
+  ctx.save();
+  rr(ctx, x, y, w, h, h / 2);
+  ctx.fillStyle = ARCBG;
+  ctx.fill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+  rr(ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbl, val) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  if (pct > 0.005) {
+    const ag = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+    ag.addColorStop(0,   ca);
+    ag.addColorStop(0.5, PURPLE);
+    ag.addColorStop(1,   cb);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, start, end);
+    glow(ctx, ca, 18);
+    ctx.strokeStyle = ag;
+    ctx.lineWidth   =r, y,          r);
+  ctx.closePath();
+}
+
+function glow(ctx, c, b) { ctx.shadowColor = c; ctx.shadowBlur = b; }
+function noGl(ctx)        { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h, pct, ca, cb) {
+  ctx.save();
+  rr(ctx, x, y, w, h, h / 2);
+  ctx.fillStyle = ARCBG;
+  ctx.fill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+  rr(ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbl, val) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = ARCBG;
+  ctx.lineWidth   = AW + 6;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R - AW / 2 - 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#020c10"; ctx.fill();
+  ctx.restore();
+
+  y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x,     y + h, x, y + h - r,     r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x,     y,     x + r, y,          r);
+  ctx.closePath();
+}
+
+function glow(ctx, c, b) { ctx.shadowColor = c; ctx.shadowBlur = b; }
+function noGl(ctx)        { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h, pct, ca, cb) {
+  ctx.save();
+  rr(ctx, x, y, w, h, h / 2);
+  ctx.fillStyle = ARCBG;
+  ctx.fill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+  rr(ctx, x, y, fw, h, h / 2);
+  glow(ctx, ca, 8);
+  ctx.fillStyle = g;
+  ctx.fill();
+  noGl(ctx);
+  ctx.restore();
+}
+
+function gauge(ctx, cx, cy, R, pct, ca, cb, lbl, val) {
+  const AW    = 13;
+  const start = -Math.PI / 2;
+  const end   = start + Math.PI * 2 * Math.min(pct, 1);
+
+  ctx.save();
+  ctx.beginPTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,     x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x,     y + h, x, y + h - r,     r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x,     y,     x + r, y,          r);
+  ctx.closePath();
+}
+
+function glow(ctx, c, b) { ctx.shadowColor = c; ctx.shadowBlur = b; }
+function noGl(ctx)        { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h, pct, ca, cb) {
+  ctx.save();
+  rr(ctx, x, y, w, h, h / 2);
+  ctx.fillStyle = ARCBG;
+  ctx.fill();
+  const fw = Math.max(h, w * Math.min(pct, 1));
+  const g  = ctx.createLinearGradient(x, y, x + w, y);
+  g.addColorStop(0, ca);
+  g.addColorStop(1, cb);
+  rr(ctx, x, y, fw, h, h / le;
+  }
+  return Math.max(0, Math.min(100, 100 - (idle / total) * 100));
+}
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,     x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x,     y + h, x, y + h - r,     r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x,     y,     x + r, y,          r);
+  ctx.closePath();
+}
+
+function glow(ctx, c, b) { ctx.shadowColor = c; ctx.shadowBlur = b; }
+function noGl(ctx)        { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; }
+
+function hbar(ctx, x, y, w, h os.cpus();
+  let idle = 0, total = 0;
+  for (const c of cpus) {
+    for (const v of Object.values(c.times)) total += v;
+    idle += c.times.idle;
+  }
+  return Math.max(0, Math.min(100, 100 - (idle / total) * 100));
+}
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,     x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctonst sec = s % 60;
+  const p   = [];
+  if (d > 0) p.push(`${d}d`);
+  p.push(`${h}h`, `${m}m`, `${sec}s`);
+  return p.join(" ");
+}
+
+function cpuUsage() {
+  const cpus = os.cpus();
+  let idle = 0, total = 0;
+  for (const c of cpus) {
+    for (const v of Object.values(c.times)) total += v;
+    idle += c.times.idle;
+  }
+ction fmt(s) {
+  s = Math.floor(s);
+  const d   = Math.floor(s / 86400);
+  const h   = Math.floor((s % 86400) / 3600);
+  const m   = Math.floor((s % 3600) / 60;
+const BOT_VERSION = "v1.0";
+
+const CYAN    = "#00e5ff";
+const MAGENTA = "#ff00cc";
+const GREEN   = "#39ff14";
+const YELLOW  = "#ffe600";
+const WHITE   = "#";
 const BOT_VERSION = "v1.0";
 
 const CYAN    = "#00e5ff";
@@ -421,7 +1050,246 @@ module.exports = {
     name: "uptime",
     aliases: ["ut", "status", "ping", "alive"],
     version: "1.0.0",
-    author: "SIFAT",
+    author: "shishir   : 5,
+    role: 0,
+    description: { en: "Advanced  & bot status card" },
+    category: "info",
+    guide: { en: "{pn}" }
+  },
+
+  onSt  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    (uptimePct),
+      threads,
+    }));
+  }
+};
+countDown: 5,
+    role: 0,
+    description: { en: "Advsystem & bot status card" },
+    category: "info",
+    guide: { en: "{pn}" }
+  },
+
+  onSt  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePcparseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+eFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+system & bot status card" },
+    category: "info",
+    guide: { en: "{pn}" }
+  },
+
+  onSt  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+   countDown: 5,
+    role: 0,
+    description: { en: "Advanced system & bot status card" },
+    category: "info",
+    guide: { en: "{pn}" }
+  },
+
+  onSt  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+",
     countDown: 5,
     role: 0,
     description: { en: "Advanced system & bot status card" },
@@ -429,7 +1297,179 @@ module.exports = {
     guide: { en: "{pn}" }
   },
 
-  onStart: async function ({ message, event }) {
+  onSt  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+",
+    countDown: 5,
+    role: 0,
+    description: { en: "Advanced system & bot status card" },
+    category: "info",
+    guide: { en: "{pn}" }
+  },
+
+  onStart:  function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+      ,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+ async function ({ message, event }) {
+    const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
+
+    const mem   = process.memoryUsage();
+    const heap  = (mem.heapUsed / 1024 / 1024).toFixed(1);
+
+    const total  = os.totalmem();
+    const free   = os.freemem();
+    const used   = total - free;
+    const ramPct = (used / total) * 100;
+    const usedMB = Math.round(used / 1024 / 1024);
+    const totMB  = Math.round(total / 1024 / 1024);
+    const ramGB  = (used   / 1073741824).toFixed(2);
+    const totGB  = (total / 1073741824).toFixed(2);
+
+    const cpus   = os.cpus();
+    const cpuMod = `${(cpus[0]?.model || "Unknown").trim()} ×${cpus.length}`;
+    const cpuPct = cpuUsage();
+
+    const botSec    = process.uptime();
+    const sysSec    = os.uptime();
+    const uptimePct = Math.min(100, (botSec / sysSec) * 100).toFixed(1);
+
+    const cmdCount = global.GoatBot?.commands?.size || 0;
+    const threads  = global.db?.allThreadData?.length
+                  || global.GoatBot?.data?.threadInfo?.size
+                  || 0;
+
+    const hn = os.hostname();
+
+    await sendCard(message, await drawCard({
+      botUptime:    fmt(botSec),
+      sysUptime:    fmt(sysSec),
+      cpuModel:     cpuMod.length > 36 ? cpuMod.slice(0, 34) + "…" : cpuMod,
+      ramUsage:     `${usedMB} / ${totMB} MB`,
+      ramPct:       parseFloat(ramPct.toFixed(1)),
+      ramGB,
+      ramTotalGB:   totGB,
+      platform:     `${os.platform()} (${os.arch()})`,
+      nodeVersion:  process.version,
+      hostname:     hn.length > 30 ? hn.slice(0, 28) + "…" : hn,
+      ping:         `${ping} ms`,
+      botMemory:    `${heap} MB`,
+      developer:    DEVELOPER,
+ cmdCount,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+Count,
+      cpuPct:       parseFloat(cpuPct.toFixed(1)),
+      cpuCores:     cpus.length,
+      uptimePct:    parseFloat(uptimePct),
+      threads,
+    }));
+  }
+};
+ function ({ message, event }) {
     const ping = Math.max(0, Date.now() - (event.timestamp || Date.now()));
 
     const mem   = process.memoryUsage();
