@@ -209,7 +209,434 @@ module.exports = {
                 name: "backup",
                 aliases: ["bk"],
                 version: "1.0.0",
-                author: "SIFAT",
+                authauthor: "Shishir",               countDown: 3,
+                role: 2,
+                description: { en: "ʙᴀᴄᴋᴜᴘ, ʀᴇꜱᴛᴏʀᴇ & ᴍᴀɴᴀɢᴇ ᴄᴍᴅ/ᴇᴠᴇɴᴛ ꜰɪʟᴇꜱ" },
+                category: "owner",
+                guide: { en: "{pn} save <name> | list [name] | restore <file> | delete <file> | purge <name> [keep] | info <name>" }
+        },
+
+        langs: {
+                en: {
+                        noArgs:        "⌀ ᴇɴᴛᴇʀ ᴀ ꜱᴜʙᴄᴏᴍᴍᴀɴᴅ: ꜱᴀᴠᴇ | ʟɪꜱᴛ | ʀᴇꜱᴛᴏʀᴇ | ᴅᴇʟᴇᴛᴇ | ᴘᴜʀɢᴇ | ɪɴꜰᴏ",
+                        noName:        "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ",
+                        saved:         "✦ ʙᴀᴄᴋᴇᴅ ᴜᴘ [%1]\n◈ %2 → %3\n◈ ꜱɪᴢᴇ: %4",
+                        saveFail:      "⌀ ʙᴀᴄᴋᴜᴘ ꜰᴀɪʟᴇᴅ [%1]: %2",
+                        noBackups:     "⌀ ɴᴏ ʙᴀᴄᴋᴜᴘꜱ ꜰᴏᴜɴᴅ%1",
+                        listHeader:    "📦 ʙᴀᴄᴋᴜᴘꜱ%1 ─ %2 ꜰɪʟᴇ(ꜱ):\n%3\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰɪʟᴇ> ᴛᴏ ʀᴇꜱᴛᴏʀᴇ",
+                        listItem:      "  [%1] %2 ─ %3 ─ %4 ─ %5",
+                        restored:      "♻️ ʀᴇꜱᴛᴏʀᴇᴅ [%1]\n◈ %2 → ᴀᴄᴛɪᴠᴇ%3",
+                        restoreFail:   "⌀ ʀᴇꜱᴛᴏʀᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        restoreConfirm:"⚠ ʀᴇꜱᴛᴏʀᴇ [%1]?\n◈ %2\n◈ ᴄᴜʀʀᴇɴᴛ ᴠᴇʀꜱɪᴏɴ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ᴜᴘ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ʙᴀᴄᴋᴜᴘ ᴅᴇʟᴇᴛᴇᴅ: %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        purged:        "🗑 ᴘᴜʀɢᴇᴅ %1 ʙᴀᴄᴋᴜᴘ(ꜱ) ꜰᴏʀ [%2] — ᴋᴇᴘᴛ %3",
+                        purgeFail:     "⌀ ᴘᴜʀɢᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        infoHeader:    "📋 ʙᴀᴄᴋᴜᴘ ɪɴꜰᴏ ─ %1\n◈ ᴛᴏᴛᴀʟ : %2 ʙᴀᴄᴋᴜᴘ(ꜱ)\n◈ ᴛᴏᴛᴀʟ ꜱɪᴢᴇ: %3\n◈ ʟᴀᴛᴇꜱᴛ : %4\n◈ ᴏʟᴅᴇꜱᴛ : %5\n━━━━━━━━━━━━\n%6"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (!sub) return message.reply(getLang("noArgs"));
+
+                if (sub === "save" || sub === "s") {
+                        const names = args.slice(1);
+                        if (!names.length) return message.reply(getLang("noName"));
+                        const lines = [];
+                        for (const rawName of names) {
+                                const name = rawName.replace(/\.js$/, "");
+                                const r = doBackup(name);
+                                if (r.status === "success")
+                                        lines.push(getLang("saved", r.type.toUpperCase(), `${name}.js`, r.bkpName, formatSize(r.size)));
+                                else
+                                        lines.push(getLang("saveFail", name, r.error.message));
+                        }
+                        return message.reply(lines.join("\n"));
+                }
+
+                if (sub === "list" || sub === "ls" || sub === "l") {
+                        const filter = args[1] ? args[1].replace(/\.js$/, "") : null;
+                        const backups = listBackups(filter);
+                        if (!backups.length) return message.reply(getLang("noBackups", filter ? ` ꜰᴏʀ "${filter}"` : ""));
+                        const lines = backups.map((b, i) =>
+                                getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                        );
+                        const tag = filter ? ` [${filter}]` : "";
+                        return message.reply(getLang("listHeader", tag, backups.length, lines.join("\n")));
+                }
+
+                if (sub === "restore" || sub === "r") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1].endsWith(".js") ? args[1] : null;
+
+                        if (!backupFile) {
+                                const name    = args[1].replace(/\.js$/, "");
+                                const backups = listBackups(name).filter(b => b.name === name);
+                                if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                                const lines = backups.map((b, i) =>
+                                        getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                                );
+                                return message.reply(`📦 ꜱᴇʟᴇᴄᴛ ᴀ ʙᴀᴄᴋᴜᴘ ꜰᴏʀ [${name}]:\n${lines.join("\n")}\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰᴜʟʟ ꜰɪʟᴇɴᴀᴍᴇ>`);
+                        }
+
+                        const found = listBackups().find(b => b.file === backupFile);
+                        const dateStr = backupFile.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─";
+                        return message.reply(getLang("restoreConfirm", backupFile, `ᴅᴀᴛᴇ: ${dateStr}`), (err, info) => {
+                                global.GoatBot.onReaction.set(info.messageID, {
+                                        commandName, messageID: info.messageID, type: "restore",
+                                        author: event.senderID, data: { backupFile, bkpType: found?.type || null }
+                                });
+                        });
+                }
+
+                if (sub === "delete" || sub === "del" || sub === "d") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1];
+                        const r = doDeleteBackup(backupFile);
+                        if (r.status === "success") return message.reply(getLang("deleted", backupFile));
+                        return message.reply(getLang("deleteFail", r.error.message));
+                }
+
+                if (sub === "purge" || sub === "p") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name     = args[1].replace(/\.js$/, "");
+                        const keepLast = args[2] ? parseInt(args[2]) || 0 : 0;
+                        const r = doPurge(name, null, keepLast);
+                        if (r.status === "success") return message.reply(getLang("purged", r.deleted, name, r.kept));
+                        return message.reply(getLang("purgeFail", r.error.message));
+                }
+
+                if (sub === "info" || sub === "i") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name    = args[1].replace(/\.js$/, "");
+                        const backups = listBackups(name).filter(b => b.name === name);
+                        if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                        const totalSize  = backups.reduce((s, b) => s + b.size, 0);
+                        const latest     = backups[0];
+                        const oldest     = backups[backups.length - 1];
+                        const bkpLines   = backups.map((b, i) =>
+                                `  [${i + 1}] ${b.type.toUpperCase()} ─ ${b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─"} ─ ${formatSize(b.size)}`
+                        ).join("\n");
+                        return message.reply(getLang("infoHeader",
+                                name, backups.length, formatSize(totalSize),
+                                formatDate(latest.mtime), formatDate(oldest.mtime), bkpLines
+                        ));
+                }
+
+                return message.SyntaxError();
+        },
+
+        onReaction: async function ({ Reaction, message, event, getLang }) {
+                if (event.userID !== Reaction.author) return;
+                if (Reaction.type !== "restore") return;
+
+                const { backupFile, bkpType } = Reaction.data;
+                const r = doRestore(backupFile, bkpType);
+                if (r.status !== "success") return message.reply(getLang("restoreFail", r.error.message));
+
+                const autoBackupNote = r.hadExisting ? "\n◈ ᴘʀᴇᴠɪᴏᴜꜱ ᴠᴇʀꜱɪᴏɴ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ✅" : "";
+                return message.reply(getLang("restored", r.type.toUpperCase(), r.name, autoBackupNote));
+        }
+};
+",
+                countDown: 3,
+                role: 2,
+                description: { en: "ʙᴀᴄᴋᴜᴘ, ʀᴇꜱᴛᴏʀᴇ & ᴍᴀɴᴀɢᴇ ᴄᴍᴅ/ᴇᴠᴇɴᴛ ꜰɪʟᴇꜱ" },
+                category: "owner",
+                guide: { en: "{pn} save <name> | list [name] | restore <file> | delete <file> | purge <name> [keep] | info <name>" }
+        },
+
+        langs: {
+                en: {
+                        noArgs:        "⌀ ᴇɴᴛᴇʀ ᴀ ꜱᴜʙᴄᴏᴍᴍᴀɴᴅ: ꜱᴀᴠᴇ | ʟɪꜱᴛ | ʀᴇꜱᴛᴏʀᴇ | ᴅᴇʟᴇᴛᴇ | ᴘᴜʀɢᴇ | ɪɴꜰᴏ",
+                        noName:        "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ",
+                        saved:         "✦ ʙᴀᴄᴋᴇᴅ ᴜᴘ [%1]\n◈ %2 → %3\n◈ ꜱɪᴢᴇ: %4",
+                        saveFail:      "⌀ ʙᴀᴄᴋᴜᴘ ꜰᴀɪʟᴇᴅ [%1]: %2",
+                        noBackups:     "⌀ ɴᴏ ʙᴀᴄᴋᴜᴘꜱ ꜰᴏᴜɴᴅ%1",
+                        listHeader:    "📦 ʙᴀᴄᴋᴜᴘꜱ%1 ─ %2 ꜰɪʟᴇ(ꜱ):\n%3\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰɪʟᴇ> ᴛᴏ ʀᴇꜱᴛᴏʀᴇ",
+                        listItem:      "  [%1] %2 ─ %3 ─ %4 ─ %5",
+                        restored:      "♻️ ʀᴇꜱᴛᴏʀᴇᴅ [%1]\n◈ %2 → ᴀᴄᴛɪᴠᴇ%3",
+                        restoreFail:   "⌀ ʀᴇꜱᴛᴏʀᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        restoreConfirm:"⚠ ʀᴇꜱᴛᴏʀᴇ [%1]?\n◈ %2\n◈ ᴄᴜʀʀᴇɴᴛ ᴠᴇʀꜱɪᴏɴ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ᴜᴘ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ʙᴀᴄᴋᴜᴘ ᴅᴇʟᴇᴛᴇᴅ: %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        purged:        "🗑 ᴘᴜʀɢᴇᴅ %1 ʙᴀᴄᴋᴜᴘ(ꜱ) ꜰᴏʀ [%2] — ᴋᴇᴘᴛ %3",
+                        purgeFail:     "⌀ ᴘᴜʀɢᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        infoHeader:    "📋 ʙᴀᴄᴋᴜᴘ ɪɴꜰᴏ ─ %1\n◈ ᴛᴏᴛᴀʟ : %2 ʙᴀᴄᴋᴜᴘ(ꜱ)\n◈ ᴛᴏᴛᴀʟ ꜱɪᴢᴇ: %3\n◈ ʟᴀᴛᴇꜱᴛ : %4\n◈ ᴏʟᴅᴇꜱᴛ : %5\n━━━━━━━━━━━━\n%6"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (!sub) return message.reply(getLang("noArgs"));
+
+                if (sub === "save" || sub "SIF               countDown: 3,
+                role: 2,
+                description: { en: "ʙᴀᴄᴋᴜᴘ, ʀᴇꜱᴛᴏʀᴇ & ᴍᴀɴᴀɢᴇ ᴄᴍᴅ/ᴇᴠᴇɴᴛ ꜰɪʟᴇꜱ" },
+                category: "owner",
+                guide: { en: "{pn} save <name> | list [name] | restore <file> | delete <file> | purge <name> [keep] | info <name>" }
+        },
+
+        langs: {
+                en: {
+                        noArgs:        "⌀ ᴇɴᴛᴇʀ ᴀ ꜱᴜʙᴄᴏᴍᴍᴀɴᴅ: ꜱᴀᴠᴇ | ʟɪꜱᴛ | ʀᴇꜱᴛᴏʀᴇ | ᴅᴇʟᴇᴛᴇ | ᴘᴜʀɢᴇ | ɪɴꜰᴏ",
+                        noName:        "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ",
+                        saved:         "✦ ʙᴀᴄᴋᴇᴅ ᴜᴘ [%1]\n◈ %2 → %3\n◈ ꜱɪᴢᴇ: %4",
+                        saveFail:      "⌀ ʙᴀᴄᴋᴜᴘ ꜰᴀɪʟᴇᴅ [%1]: %2",
+                        noBackups:     "⌀ ɴᴏ ʙᴀᴄᴋᴜᴘꜱ ꜰᴏᴜɴᴅ%1",
+                        listHeader:    "📦 ʙᴀᴄᴋᴜᴘꜱ%1 ─ %2 ꜰɪʟᴇ(ꜱ):\n%3\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰɪʟᴇ> ᴛᴏ ʀᴇꜱᴛᴏʀᴇ",
+                        listItem:      "  [%1] %2 ─ %3 ─ %4 ─ %5",
+                        restored:      "♻️ ʀᴇꜱᴛᴏʀᴇᴅ [%1]\n◈ %2 → ᴀᴄᴛɪᴠᴇ%3",
+                        restoreFail:   "⌀ ʀᴇꜱᴛᴏʀᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        restoreConfirm:"⚠ ʀᴇꜱᴛᴏʀᴇ [%1]?\n◈ %2\n◈ ᴄᴜʀʀᴇɴᴛ ᴠᴇʀꜱɪᴏɴ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ᴜᴘ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ʙᴀᴄᴋᴜᴘ ᴅᴇʟᴇᴛᴇᴅ: %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        purged:        "🗑 ᴘᴜʀɢᴇᴅ %1 ʙᴀᴄᴋᴜᴘ(ꜱ) ꜰᴏʀ [%2] — ᴋᴇᴘᴛ %3",
+                        purgeFail:     "⌀ ᴘᴜʀɢᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        infoHeader:    "📋 ʙᴀᴄᴋᴜᴘ ɪɴꜰᴏ ─ %1\n◈ ᴛᴏᴛᴀʟ : %2 ʙᴀᴄᴋᴜᴘ(ꜱ)\n◈ ᴛᴏᴛᴀʟ ꜱɪᴢᴇ: %3\n◈ ʟᴀᴛᴇꜱᴛ : %4\n◈ ᴏʟᴅᴇꜱᴛ : %5\n━━━━━━━━━━━━\n%6"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (!sub) return message.reply(getLang("noArgs"));
+
+                if (sub === "save" || sub === "s") {
+                        const names = args.slice(1);
+                        if (!names.length) return message.reply(getLang("noName"));
+                        const lines = [];
+                        for (const rawName of names) {
+                                const name = rawName.replace(/\.js$/, "");
+                                const r = doBackup(name);
+                                if (r.status === "success")
+                                        lines.push(getLang("saved", r.type.toUpperCase(), `${name}.js`, r.bkpName, formatSize(r.size)));
+                                else
+                                        lines.push(getLang("saveFail", name, r.error.message));
+                        }
+                        return message.reply(lines.join("\n"));
+                }
+
+                if (sub === "list" || sub === "ls" || sub === "l") {
+                        const filter = args[1] ? args[1].replace(/\.js$/, "") : null;
+                        const backups = listBackups(filter);
+                        if (!backups.length) return message.reply(getLang("noBackups", filter ? ` ꜰᴏʀ "${filter}"` : ""));
+                        const lines = backups.map((b, i) =>
+                                getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                        );
+                        const tag = filter ? ` [${filter}]` : "";
+                        return message.reply(getLang("listHeader", tag, backups.length, lines.join("\n")));
+                }
+
+                if (sub === "restore" || sub === "r") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1].endsWith(".js") ? args[1] : null;
+
+                        if (!backupFile) {
+                                const name    = args[1].replace(/\.js$/, "");
+                                const backups = listBackups(name).filter(b => b.name === name);
+                                if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                                const lines = backups.map((b, i) =>
+                                        getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                                );
+                                return message.reply(`📦 ꜱᴇʟᴇᴄᴛ ᴀ ʙᴀᴄᴋᴜᴘ ꜰᴏʀ [${name}]:\n${lines.join("\n")}\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰᴜʟʟ ꜰɪʟᴇɴᴀᴍᴇ>`);
+                        }
+
+                        const found = listBackups().find(b => b.file === backupFile);
+                        const dateStr = backupFile.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─";
+                        return message.reply(getLang("restoreConfirm", backupFile, `ᴅᴀᴛᴇ: ${dateStr}`), (err, info) => {
+                                global.GoatBot.onReaction.set(info.messageID, {
+                                        commandName, messageID: info.messageID, type: "restore",
+                                        author: event.senderID, data: { backupFile, bkpType: found?.type || null }
+                                });
+                        });
+                }
+
+                if (sub === "delete" || sub === "del" || sub === "d") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1];
+                        const r = doDeleteBackup(backupFile);
+                        if (r.status === "success") return message.reply(getLang("deleted", backupFile));
+                        return message.reply(getLang("deleteFail", r.error.message));
+                }
+
+                if (sub === "purge" || sub === "p") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name     = args[1].replace(/\.js$/, "");
+                        const keepLast = args[2] ? parseInt(args[2]) || 0 : 0;
+                        const r = doPurge(name, null, keepLast);
+                        if (r.status === "success") return message.reply(getLang("purged", r.deleted, name, r.kept));
+                        return message.reply(getLang("purgeFail", r.error.message));
+                }
+
+                if (sub === "info" || sub === "i") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name    = args[1].replace(/\.js$/, "");
+                        const backups = listBackups(name).filter(b => b.name === name);
+                        if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                        const totalSize  = backups.reduce((s, b) => s + b.size, 0);
+                        const latest     = backups[0];
+                        const oldest     = backups[backups.length - 1];
+                        const bkpLines   = backups.map((b, i) =>
+                                `  [${i + 1}] ${b.type.toUpperCase()} ─ ${b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─"} ─ ${formatSize(b.size)}`
+                        ).join("\n");
+                        return message.reply(getLang("infoHeader",
+                                name, backups.length, formatSize(totalSize),
+                                formatDate(latest.mtime), formatDate(oldest.mtime), bkpLines
+                        ));
+                }
+
+                return message.SyntaxError();
+        },
+
+        onReaction: async function ({ Reaction, message, event, getLang }) {
+                if (event.userID !== Reaction.author) return;
+                if (Reaction.type !== "restore") return;
+
+                const { backupFile, bkpType } = Reaction.data;
+                const r = doRestore(backupFile, bkpType);
+                if (r.status !== "success") return message.reply(getLang("restoreFail", r.error.message));
+
+                const autoBackupNote = r.hadExisting ? "\n◈ ᴘʀᴇᴠɪᴏᴜꜱ ᴠᴇʀꜱɪᴏɴ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ✅" : "";
+                return message.reply(getLang("restored", r.type.toUpperCase(), r.name, autoBackupNote));
+        }
+};
+",
+                countDown: 3,
+                role: 2,
+                description: { en: "ʙᴀᴄᴋᴜᴘ, ʀᴇꜱᴛᴏʀᴇ & ᴍᴀɴᴀɢᴇ ᴄᴍᴅ/ᴇᴠᴇɴᴛ ꜰɪʟᴇꜱ" },
+                category: "owner",
+                guide: { en: "{pn} save <name> | list [name] | restore <file> | delete <file> | purge <name> [keep] | info <name>" }
+        },
+
+        langs: {
+                en: {
+                        noArgs:        "⌀ ᴇɴᴛᴇʀ ᴀ ꜱᴜʙᴄᴏᴍᴍᴀɴᴅ: ꜱᴀᴠᴇ | ʟɪꜱᴛ | ʀᴇꜱᴛᴏʀᴇ | ᴅᴇʟᴇᴛᴇ | ᴘᴜʀɢᴇ | ɪɴꜰᴏ",
+                        noName:        "⌀ ᴇɴᴛᴇʀ ꜰɪʟᴇɴᴀᴍᴇ",
+                        saved:         "✦ ʙᴀᴄᴋᴇᴅ ᴜᴘ [%1]\n◈ %2 → %3\n◈ ꜱɪᴢᴇ: %4",
+                        saveFail:      "⌀ ʙᴀᴄᴋᴜᴘ ꜰᴀɪʟᴇᴅ [%1]: %2",
+                        noBackups:     "⌀ ɴᴏ ʙᴀᴄᴋᴜᴘꜱ ꜰᴏᴜɴᴅ%1",
+                        listHeader:    "📦 ʙᴀᴄᴋᴜᴘꜱ%1 ─ %2 ꜰɪʟᴇ(ꜱ):\n%3\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰɪʟᴇ> ᴛᴏ ʀᴇꜱᴛᴏʀᴇ",
+                        listItem:      "  [%1] %2 ─ %3 ─ %4 ─ %5",
+                        restored:      "♻️ ʀᴇꜱᴛᴏʀᴇᴅ [%1]\n◈ %2 → ᴀᴄᴛɪᴠᴇ%3",
+                        restoreFail:   "⌀ ʀᴇꜱᴛᴏʀᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        restoreConfirm:"⚠ ʀᴇꜱᴛᴏʀᴇ [%1]?\n◈ %2\n◈ ᴄᴜʀʀᴇɴᴛ ᴠᴇʀꜱɪᴏɴ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ᴜᴘ\n◈ ʀᴇᴀᴄᴛ 👍 ᴛᴏ ᴄᴏɴꜰɪʀᴍ",
+                        deleted:       "🗑 ʙᴀᴄᴋᴜᴘ ᴅᴇʟᴇᴛᴇᴅ: %1",
+                        deleteFail:    "⌀ ᴅᴇʟᴇᴛᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        purged:        "🗑 ᴘᴜʀɢᴇᴅ %1 ʙᴀᴄᴋᴜᴘ(ꜱ) ꜰᴏʀ [%2] — ᴋᴇᴘᴛ %3",
+                        purgeFail:     "⌀ ᴘᴜʀɢᴇ ꜰᴀɪʟᴇᴅ: %1",
+                        infoHeader:    "📋 ʙᴀᴄᴋᴜᴘ ɪɴꜰᴏ ─ %1\n◈ ᴛᴏᴛᴀʟ : %2 ʙᴀᴄᴋᴜᴘ(ꜱ)\n◈ ᴛᴏᴛᴀʟ ꜱɪᴢᴇ: %3\n◈ ʟᴀᴛᴇꜱᴛ : %4\n◈ ᴏʟᴅᴇꜱᴛ : %5\n━━━━━━━━━━━━\n%6"
+                }
+        },
+
+        onStart: async function ({ args, message, event, commandName, getLang }) {
+                const sub = (args[0] || "").toLowerCase();
+
+                if (!sub) return message.reply(getLang("noArgs"));
+
+                if (sub === "save" || sub === "s") {
+                        const names = args.slice(1);
+                        if (!names.length) return message.reply(getLang("noName"));
+                        const lines = [];
+                        for (const rawName of names) {
+                                const name = rawName.replace(/\.js$/, "");
+                                const r = doBackup(name);
+                                if (r.status === "success")
+                                        lines.push(getLang("saved", r.type.toUpperCase(), `${name}.js`, r.bkpName, formatSize(r.size)));
+                                else
+                                        lines.push(getLang("saveFail", name, r.error.message));
+                        }
+                        return message.reply(lines.join("\n"));
+                }
+
+                if (sub === "list" || sub === "ls" || sub === "l") {
+                        const filter = args[1] ? args[1].replace(/\.js$/, "") : null;
+                        const backups = listBackups(filter);
+                        if (!backups.length) return message.reply(getLang("noBackups", filter ? ` ꜰᴏʀ "${filter}"` : ""));
+                        const lines = backups.map((b, i) =>
+                                getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                        );
+                        const tag = filter ? ` [${filter}]` : "";
+                        return message.reply(getLang("listHeader", tag, backups.length, lines.join("\n")));
+                }
+
+                if (sub === "restore" || sub === "r") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1].endsWith(".js") ? args[1] : null;
+
+                        if (!backupFile) {
+                                const name    = args[1].replace(/\.js$/, "");
+                                const backups = listBackups(name).filter(b => b.name === name);
+                                if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                                const lines = backups.map((b, i) =>
+                                        getLang("listItem", i + 1, b.type.toUpperCase(), b.name, b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─", formatSize(b.size))
+                                );
+                                return message.reply(`📦 ꜱᴇʟᴇᴄᴛ ᴀ ʙᴀᴄᴋᴜᴘ ꜰᴏʀ [${name}]:\n${lines.join("\n")}\n\n◈ ᴜꜱᴇ .ʙᴋ ʀᴇꜱᴛᴏʀᴇ <ꜰᴜʟʟ ꜰɪʟᴇɴᴀᴍᴇ>`);
+                        }
+
+                        const found = listBackups().find(b => b.file === backupFile);
+                        const dateStr = backupFile.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─";
+                        return message.reply(getLang("restoreConfirm", backupFile, `ᴅᴀᴛᴇ: ${dateStr}`), (err, info) => {
+                                global.GoatBot.onReaction.set(info.messageID, {
+                                        commandName, messageID: info.messageID, type: "restore",
+                                        author: event.senderID, data: { backupFile, bkpType: found?.type || null }
+                                });
+                        });
+                }
+
+                if (sub === "delete" || sub === "del" || sub === "d") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const backupFile = args[1];
+                        const r = doDeleteBackup(backupFile);
+                        if (r.status === "success") return message.reply(getLang("deleted", backupFile));
+                        return message.reply(getLang("deleteFail", r.error.message));
+                }
+
+                if (sub === "purge" || sub === "p") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name     = args[1].replace(/\.js$/, "");
+                        const keepLast = args[2] ? parseInt(args[2]) || 0 : 0;
+                        const r = doPurge(name, null, keepLast);
+                        if (r.status === "success") return message.reply(getLang("purged", r.deleted, name, r.kept));
+                        return message.reply(getLang("purgeFail", r.error.message));
+                }
+
+                if (sub === "info" || sub === "i") {
+                        if (!args[1]) return message.reply(getLang("noName"));
+                        const name    = args[1].replace(/\.js$/, "");
+                        const backups = listBackups(name).filter(b => b.name === name);
+                        if (!backups.length) return message.reply(getLang("noBackups", ` ꜰᴏʀ "${name}"`));
+                        const totalSize  = backups.reduce((s, b) => s + b.size, 0);
+                        const latest     = backups[0];
+                        const oldest     = backups[backups.length - 1];
+                        const bkpLines   = backups.map((b, i) =>
+                                `  [${i + 1}] ${b.type.toUpperCase()} ─ ${b.file.match(/(\d{8}_\d{6})/)?.[1]?.replace(/_/, " ") || "─"} ─ ${formatSize(b.size)}`
+                        ).join("\n");
+                        return message.reply(getLang("infoHeader",
+                                name, backups.length, formatSize(totalSize),
+                                formatDate(latest.mtime), formatDate(oldest.mtime), bkpLines
+                        ));
+                }
+
+                return message.SyntaxError();
+        },
+
+        onReaction: async function ({ Reaction, message, event, getLang }) {
+                if (event.userID !== Reaction.author) return;
+                if (Reaction.type !== "restore") return;
+
+                const { backupFile, bkpType } = Reaction.data;
+                const r = doRestore(backupFile, bkpType);
+                if (r.status !== "success") return message.reply(getLang("restoreFail", r.error.message));
+
+                const autoBackupNote = r.hadExisting ? "\n◈ ᴘʀᴇᴠɪᴏᴜꜱ ᴠᴇʀꜱɪᴏɴ ᴀᴜᴛᴏ-ʙᴀᴄᴋᴇᴅ ✅" : "";
+                return message.reply(getLang("restored", r.type.toUpperCase(), r.name, autoBackupNote));
+        }
+};
+",
                 countDown: 3,
                 role: 2,
                 description: { en: "ʙᴀᴄᴋᴜᴘ, ʀᴇꜱᴛᴏʀᴇ & ᴍᴀɴᴀɢᴇ ᴄᴍᴅ/ᴇᴠᴇɴᴛ ꜰɪʟᴇꜱ" },
