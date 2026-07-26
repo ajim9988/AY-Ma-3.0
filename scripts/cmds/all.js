@@ -2,11 +2,91 @@ module.exports = {
   config: {
     name: "all",
     version: "1.0",
-    author: "S1F4T",
+    author: "Shishir",
+    countDown: 4,
+    role: 1,
+    description: {
+      en: "Tag everyone in tF",
+    countDown: 4,
+    role: 1,
+    description: {
+      en: "Tag everyone in the",
     countDown: 4,
     role: 1,
     description: {
       en: "Tag everyone in the most annoying & funny way  🐤💨"
+    },
+    category: "group",
+    guide: {
+      en: "{ptext | empty] | flags: --ghost --emoji --hacker --cry --spam"
+    }
+  },
+
+  onStart: asfunction ({ message, event, args }) {
+    const { participantIDs } = event;
+
+    const botID senderID || global.client?.userID || global.botID || "";
+
+    const members = participantIDsuid => uid !== botID);
+
+    if (members.length === 0) {
+      return message.reply("Only in this group? Nothing to tag 😭");
+    }
+
+    let text = args.join(" ").replace(/--\w+/g, '').trim() || "";
+    const flags = new Set(args.filter(a => a.startsWith('--')).map(f => f.slice(2).toLowerCase()));
+
+    if (!text) text = "@everyone get bullied rn 🚨";
+
+    let body = text;
+    const mentions = [];
+    let offset = 0;
+
+    const prefixes = ["Yo ", "Hey ", "Oi ", "Wake up ", "Target: ", "You can't hide "];
+    const suffixes = [" come online", " where u at?", " reply or else", " show yourself", " stop lurking"];
+
+    const emojis = ["💀", "😂", "🤡", "🗿", "🔥", "👻", "🪦", "😭", "🤓", "🫵", "🚨"];
+
+    le in this group? Nothing to tag 😭");
+    }
+
+    let text = args.join(" ").replace(/--\w+/g, '').trim() || "";
+    const flags = new Set(args.filter(a => a.startsWith('--')).map(f => f.slice(2).toLowerCase()));
+
+    if (!text) text = "@everyone get bullied rn 🚨";
+
+    let body = text;
+    const mentions = [];
+    let offset = 0;
+
+    const prefixes = ["Yo ", "Hey ", "Oi ", "Wake up ", "Target: ", "You can't hide "];
+    const suffixes = ["lter(uid => uid !== botID);
+
+    if (members.length === 0) {
+      return message.reply("Only me in this group? Nothing to tag 😭");
+    }
+
+    let text = args.join(" ").replace(/--\w+/g, '').trim() || "";
+    const flags = new Set(args.filter(a => a.startsWith('--')).map(f => f.slice(2).toLowerCase()));
+
+    if (!text) text = "@everyone get bullied senderID || global.client?.userID || global.botID || "";
+
+    const members = participantIDs.filter(uid => uid !== botID);
+
+    if (members.length === 0) {
+      return message.reply("Only me in this group? Nothing to tag 😭");
+    }
+
+    let text = argtion ({ message, event, args }) {
+    const { participantIDs } = event;
+
+    const botID = event.senderID || global.client?.userID || global.botID || "";
+
+    const memtext | empty] | flags: --ghost --emoji --hacker --cry --spam"
+    }
+  },
+
+  onSta annoying & funny way  🐤💨"
     },
     category: "group",
     guide: {
