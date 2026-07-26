@@ -111,7 +111,7 @@ module.exports = {
     config: {
         name:        "welcome",
         version:     "3.0.0",
-        author:      "SIFAT",
+        author:      "Shishir",
         category:    "events",
         description: "Auto welcome new members with styled image card, batch support and custom templates."
     },
@@ -128,6 +128,68 @@ module.exports = {
                 "◈ Commands: %1help",
             defaultWelcomeMessage:
                 "👋 Welcome to {boxName}, {userName}!\n" +
+                "You are member #{count} 🎉\n" +
+                "Have a great {session}! 😊"
+        }
+    },
+
+    onStart: async ({ api, event, threadsData, getLang }) => {
+        if (event.logMessageType !== "log:subscribe") return;
+
+        return async function () {
+            const { threadID } = event;
+            const participants = event.logMessageData?.addedParticipants || [];
+            if (!participants.length) return;
+
+            const botID = api.getCurrentUserID();
+            const prefix = global.utils.getPrefix(threadID);
+
+            if (participants.some(p => p.userFbId == botID)) {
+                const nick = global.GoatBot?.config?.nickNameBot;
+                if (nick) { try { api.changeNickname(nick, threadID, botID); } catch (_) {} }
+                try { api.sendMessage(getLang("botJoinMessage", prefix), threadID); } catch (_) {}
+                return;
+            }
+
+            if (!global.temp.welcomeEvent[threadID]) {
+                global.temp.welcomeEvent[threadID] = { timer: null, batch: [] };
+            }
+
+            for (const user of participants) {
+                if (user.userFbId == botID) continue;
+                global.temp.welcomeEvent[threadID].batch.push({
+                    uid:  user.userFbId,
+                    name: user.fullName || "Member"
+                });
+            }
+
+            clearTimeout(global.temp.welcomeEvent[threadID].timer);
+
+            global.temp.welcomeEvent[threadID].timer = setTimeout(() => {
+                const batch = global.temp.welcomeEvent[threadID]?.batch || [];
+                delete global.temp.welcomeEvent[threadID];
+                flushBatch(threadID, batch, api, threadsData).catch(() => {});
+            }, BATCH_MS);
+        };
+    A
+};
+",
+        category:    "events",
+        description: "Auto welcome new members with styled image card, batch support and custom templates."
+    },
+
+    langs: {
+        en: {
+            session1:            "morning",
+            session2:            "noon",
+            session3:            "afternoon",
+            session4:            "evening",
+            botJoinMessage:
+                "🤖 Thanks for adding me!\n" +
+                "◈ Prefix : %1\n" +
+                "◈ Commands: %1help",
+            defaultWelcomeMessage:
+                "👋 Welcome to {}, {userName}!\n" +
                 "You are member #{count} 🎉\n" +
                 "Have a great {session}! 😊"
         }
