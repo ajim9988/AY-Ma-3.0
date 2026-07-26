@@ -17,7 +17,81 @@ module.exports = {
 		name: "admin",
 		aliases: ["adm"],
 		version: "2.0.0",
-		author: "SIFAT",
+		author: "shishir",	: 3,
+		role: 2,
+		description: { en: "ᴍᴀɴᴀɢᴇ ʙᴏᴛ ᴀᴅᴍɪɴꜱ" },
+		category: "owner",
+		guide: {
+			en: "   {pn} add [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴀᴅᴅ ᴀᴅᴍɪɴ\n   {pn} remove [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ʀᴇᴍᴏᴠᴇ ᴀᴅᴍɪɴ\n   {pn} list — ʟɪꜱᴛ ᴀʟʟ ᴀᴅᴍɪɴꜱ\n   {pn} check [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴄʜᴇᴄᴋ ꜱᴛᴀᴛᴜꜱ"
+		}
+	},
+
+	langs: {
+		en: {
+			noUID:      "⌀ ᴛᴀɢ / ʀᴇᴘʟʏ / ᴘʀᴏᴠɪᴅᴇ ᴜɪᴅ",
+			listEmpty:  "⌀ ɴᴏ ᴀᴅᴍɪɴꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ",
+			isAdmin:    "✦ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ᴀᴅᴍɪɴ ✔",
+			isNotAdmin: "◈ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ɴᴏᴛ ᴀᴅᴍɪɴ ✘"
+		}
+	},
+
+	onStart: async function ({ message, args, , event, getLang }) {
+countDown: 3,
+		role: 2,
+		description: { en: "ᴍᴀɴᴀɢᴇ ʙᴏᴛ ᴀᴅᴍɪɴꜱ" },
+		category: "owner",
+		guide: {
+			en: "   {pn} add [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴀᴅᴅ ᴀᴅᴍɪɴ\n   {pn} remove [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ʀᴇᴍᴏᴠᴇ ᴀᴅᴍɪɴ\n   {pn} list — ʟɪꜱᴛ ᴀʟʟ ᴀᴅᴍɪɴꜱ\n   {pn} check [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴄʜᴇᴄᴋ ꜱᴛᴀᴛᴜꜱ"
+		}
+	},
+
+	langs: {
+		en: {
+			noUID:      "⌀ ᴛᴀɢ / ʀᴇᴘʟʏ / ᴘʀᴏᴠɪᴅᴇ ᴜɪᴅ",
+			listEmpty:  "⌀ ɴᴏ ᴀᴅᴍɪɴꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ",
+			isAdmin:    "✦ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ᴀᴅᴍɪɴ ✔",
+			isNotAdmin: "◈ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ɴᴏᴛ ᴀᴅᴍɪɴ ✘"
+		}
+	},
+
+	onStart: async function ({ message, args, , event, getLang	countDown: 3,
+		role: 2,
+		description: { en: "ᴍᴀɴᴀɢᴇ ʙᴏᴛ ᴀᴅᴍɪɴꜱ" },
+		category: "owner",
+		guide: {
+			en: "   {pn} add [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴀᴅᴅ ᴀᴅᴍɪɴ\n   {pn} remove [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ʀᴇᴍᴏᴠᴇ ᴀᴅᴍɪɴ\n   {pn} list — ʟɪꜱᴛ ᴀʟʟ ᴀᴅᴍɪɴꜱ\n   {pn} check [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴄʜᴇᴄᴋ ꜱᴛᴀᴛᴜꜱ"
+		}
+	},
+
+	langs: {
+		en: {
+			noUID:      "⌀ ᴛᴀɢ / ʀᴇᴘʟʏ / ᴘʀᴏᴠɪᴅᴇ ᴜɪᴅ",
+			listEmpty:  "⌀ ɴᴏ ᴀᴅᴍɪɴꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ",
+			isAdmin:    "✦ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ᴀᴅᴍɪɴ ✔",
+			isNotAdmin: "◈ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ɴᴏᴛ ᴀᴅᴍɪɴ ✘"
+		}
+	},
+
+	onStart: async function ({ message, args, , eve",
+		countDown: 3,
+		role: 2,
+		description: { en: "ᴍᴀɴᴀɢᴇ ʙᴏᴛ ᴀᴅᴍɪɴꜱ" },
+		category: "owner",
+		guide: {
+			en: "   {pn} add [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴀᴅᴅ ᴀᴅᴍɪɴ\n   {pn} remove [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ʀᴇᴍᴏᴠᴇ ᴀᴅᴍɪɴ\n   {pn} list — ʟɪꜱᴛ ᴀʟʟ ᴀᴅᴍɪɴꜱ\n   {pn} check [@|ᴜɪᴅ|ʀᴇᴘʟʏ] — ᴄʜᴇᴄᴋ ꜱᴛᴀᴛᴜꜱ"
+		}
+	},
+
+	langs: {
+		en: {
+			noUID:      "⌀ ᴛᴀɢ / ʀᴇᴘʟʏ / ᴘʀᴏᴠɪᴅᴇ ᴜɪᴅ",
+			listEmpty:  "⌀ ɴᴏ ᴀᴅᴍɪɴꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ",
+			isAdmin:    "✦ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ᴀᴅᴍɪɴ ✔",
+			isNotAdmin: "◈ %1\n◈ ɪᴅ    : %2\n◈ ꜱᴛᴀᴛᴜꜱ: ɴᴏᴛ ᴀᴅᴍɪɴ ✘"
+		}
+	},
+
+	onStart: async function ({ message, args, ,",
 		countDown: 3,
 		role: 2,
 		description: { en: "ᴍᴀɴᴀɢᴇ ʙᴏᴛ ᴀᴅᴍɪɴꜱ" },
@@ -37,6 +111,36 @@ module.exports = {
 	},
 
 	onStart: async function ({ message, args, usersData, event, getLang }) {
+		const adminList = global.GoatBot?.config?.adminBot || [];
+		const sub = (args[0] || "").toLowerCase();
+
+		if (sub === "list" || sub === "-l") {
+			if (!adminList.length) return message.reply(getLang("listEmpty"));
+			const lines = await Promise.all(adminList.map(async (id, i) => {
+				const u = await usersData.get(id).catch(() => ({ name: "Unknown" }));
+				return `◦ ${i + 1}. ${u.name || "Unknown"} [${id}]`;
+			}));
+			return message.reply(
+				`✦ ᴀᴅᴍɪɴ ʟɪꜱᴛ (${adminList.length}):\n`
+				+ lines.join("\n")
+			);
+		}
+
+		if (sub === "add" || sub === "-a") {
+			const uids = resolveUIDs(args, event, 1);
+			if (!uids.length) return message.reply(getLang("noUID"));
+			const added = [], already = [];
+			for (const uid of uids) {
+				if (adminList.includes(uid)) { already.push(uid); continue; }
+				adminList.push(uid);
+				added.push(uid);
+			}
+			global.GoatBot.config.adminBot = adminList;
+			const cfg = await fs.readJson(CONFIG_FILE);
+			cfg.adminBot = adminList;
+			await fs.writeJson(CONFIG_FILE, cfg, { spaces: 2 });
+			const names = await Promise.all(added.map(async id => {
+				, event, getLang }) {
 		const adminList = global.GoatBot?.config?.adminBot || [];
 		const sub = (args[0] || "").toLowerCase();
 
