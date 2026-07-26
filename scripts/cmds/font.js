@@ -5,12 +5,117 @@ module.exports = {
         name: "font",
         aliases: ["stylefont"],
         version: "1.6.0",
-        author: "SIFAT",
+        author: "shishir",countDown: 5,
+        role: 0,
+        category: "utility",
+        description: "Convert text to various font styles with list support",
+        guide: "{}font list n{pn}font [number] [text]\nExample: {pn}font 43 Hello"
+    },
+
+    onStart: async function ({ args, message, event }) {
+        const { messageID } = ;
+
+        if args.length === 0) {
+            return message.reply("❌ Usage:\n.font list [text]\n.font [style_number] [text]");
+        }
+
+        const action = args[0].();
+
+    try {
+
+            if (action === "list") {
+                const text = args.slice(1).join(" ") || "Sifat";
+
+                message.reaction("⏳", messageID);
+
+                const res = await axios.get(`https://maybexenos.vercel.app/font-symbol/stylefont?text=${encodeURIComponent(text)}&all=true`);
+                const styles = res.data.styles;
+
+                if (!Array.isArray(styles)) {
+                    return message.reply("❌ Could not fetch font styles.");
+                }
+
+                let combinedMsg = `📋 Font List for: "${text}"\n\n`;
+
+                styles.forEach((item) => {
+                    combinedMsg += `${item.id}. ${item.l try {
+
+            if (action === "list") {
+                const text = args.slice(1).join(" ") || "Sifat";
+
+                message.reaction("⏳", messageID);
+
+                const res = await axios.get(`https://maybexenos.vercel.app/font-symbol/stylefont?text=${encodeURIComponent(text)}&all=true`);
+                const sts.length === 0) {
+            return message.reply("❌ Usage:\n.font list [text]\n.font [style_number] [text]");
+        }
+
+        const action = args[0].();
+
+   text]\n  countDown: 5,
+        role: 0,
+        category: "utility",
+        description: "Convert text to various font styles with list support",
+        guide: "{}font       countDown: 5,
+        role: 0,
+        category: "utility",
+        description: "Convert text to various font styles with list support",
+        guide: "{}f",
+        countDown: 5,
+        role: 0,
+        category: "utility",
+        description: "Convert text to various font styles with list support",
+        guide:",
         countDown: 5,
         role: 0,
         category: "utility",
         description: "Convert text to various font styles with list support",
         guide: "{pn}font list [text]\n{pn}font [number] [text]\nExample: {pn}font 43 Hello"
+    },
+
+    onStart: async function ({ args, message, event }) {
+        const { messageID } event;
+
+        if (args.length === 0) {
+            return message.reply("❌ Usage:\n.font list [text]\n.font [style_number] [text]");
+        }
+
+        const action = argtoLowerCase();
+
+        try {
+
+            if (action === "list") {
+                const text = args.slice(1).join(" ") || "Sifat";
+
+                message.reaction("⏳", messageID);
+
+                const res = await axios.get(`https://maybexenos.vercel.app/font-symbol/stylefont?text=${encodeURIComponent(text)}&all=true`);
+                const styles = res.data.styles;
+
+                if (!Array.isArray(styles)) {
+                    return message.reply("❌ Could not fetch font styles.");
+                }
+
+                let combinedMsg = `📋 Font List for: "${text}"\n\n`;
+
+                styles.forEach((item) => {
+                    combinedMsg += `${item.id}. ${item.rCase();
+
+        try {
+
+            if (action === "list") {
+                const text = args.slice(1).join(" ") || "Sifat";
+
+                message.reaction("⏳", messageID);
+
+                const res = await axios.get(`https://maybexenos.vercel.app/font-symbol/stylefont?text=${encodeURIComponent(text)}&all=true`);
+   nt;
+
+        if (args.length === 0) {
+            return message.reply("❌ Usage:\n.font list [text]\n.font [style_number] [text]");
+        }
+
+        const action}font list [text]\n{pn}font [number] [text]\nExample: {pn}font 43 Hello"
     },
 
     onStart: async function ({ args, message, event }) {
