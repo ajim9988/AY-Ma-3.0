@@ -5,12 +5,35 @@ module.exports = {
     config: {
         name: "daily",
         version: "1.0.0",
-        author: "S1F4T",
+        author: "Shishir",
+        countDown: 5,
+        role: 0,
+        description: {
+            vi: "Nhận quà hàng ngày với giao diện ảnh",
+            en: "Receive daily rewards with only imageF",
+        countDown: 5,
+        role: 0,
+        description: {
+            vi: "Nhận quà hàng ngày với giao diện ảnh",
+            en: "Receive daily rewards with only image "",
         countDown: 5,
         role: 0,
         description: {
             vi: "Nhận quà hàng ngày với giao diện ảnh",
             en: "Receive daily rewards with only image interface"
+        },
+        category: "game",
+        guide: {
+            en: "   {pn}: Claim your daily reward"
+        },
+        envConfig: {
+            rewardFirstDay: { coin: 500, exp: 50 }
+        }
+    },
+
+    onStart: async function ({ event, envCommands, usersData, api, message }) {
+        const { senderID } = event;
+        const reward = envComman"
         },
         category: "game",
         guide: {
